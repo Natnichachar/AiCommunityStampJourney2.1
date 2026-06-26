@@ -1,0 +1,1709 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Community — Stamp Journey 2.0</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css">
+<script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --terra:#C4622D;--terra-l:#E8A882;--terra-p:#F5E6DC;
+  --cream:#FAF7F2;--cream-d:#F0EAE0;
+  --tm:#2C1F14;--ts:#7A5C44;
+  --green:#00704A;--green-l:#EAF7F0;--green-d:#004D33;
+  --navy:#1A3A5C;--blue:#2D6EC4;--blue-l:#EAF3FF;--blue-d:#0C447C;
+  --gray:#6B7280;--gray-l:#F3F4F6;
+  --red:#DC2626;--red-l:#FEE2E2;
+  --amber:#D97706;--amber-l:#FEF3C7;
+  --purple:#6D3FA0;--purple-l:#F1E9F8;--purple-d:#4A2470;
+  --font:'Montserrat',sans-serif;
+  --r-sm:10px;--r-md:14px;--r-lg:20px;--r-xl:26px;
+  --shadow:0 2px 12px rgba(44,31,20,.08);
+  --shadow-lg:0 8px 32px rgba(44,31,20,.14);
+}
+body{background:#E4DDD5;min-height:100vh;display:flex;justify-content:center;font-family:var(--font);}
+.app{width:100%;max-width:430px;min-height:100vh;background:var(--cream);display:flex;flex-direction:column;}
+.screen{display:none;flex-direction:column;min-height:100vh;}
+.screen.active{display:flex;}
+
+/* AUTH */
+.auth-hero{background:var(--terra);padding:48px 28px 36px;text-align:center;}
+.auth-hero-icon{width:64px;height:64px;background:rgba(255,255,255,.2);border-radius:20px;display:flex;align-items:center;justify-content:center;margin:0 auto 18px;}
+.auth-hero-icon i{font-size:32px;color:#fff;}
+.auth-hero h1{font-size:26px;font-weight:700;color:#fff;margin-bottom:4px;}
+.auth-hero h2{font-size:16px;font-weight:500;color:rgba(255,255,255,.8);margin-bottom:10px;}
+.auth-hero p{font-size:13px;color:rgba(255,255,255,.65);line-height:1.6;}
+.auth-body{padding:28px 24px 40px;flex:1;}
+.auth-tabs{display:flex;background:var(--cream-d);border-radius:var(--r-md);padding:4px;margin-bottom:24px;}
+.auth-tab{flex:1;padding:10px 0;font-size:13px;font-weight:700;text-align:center;cursor:pointer;border:none;background:transparent;border-radius:10px;color:var(--ts);font-family:var(--font);transition:.2s;}
+.auth-tab.active{background:#fff;color:var(--terra);box-shadow:var(--shadow);}
+.form-group{margin-bottom:16px;}
+.form-label{font-size:12px;font-weight:700;color:var(--ts);margin-bottom:6px;display:block;text-transform:uppercase;letter-spacing:.8px;}
+.form-input{width:100%;padding:13px 16px;border:1.5px solid var(--cream-d);border-radius:var(--r-md);font-size:14px;font-family:var(--font);color:var(--tm);background:#fff;outline:none;transition:border-color .2s;}
+.form-input:focus{border-color:var(--terra);}
+.form-input::placeholder{color:#C4B5A8;}
+.form-select{width:100%;padding:13px 16px;border:1.5px solid var(--cream-d);border-radius:var(--r-md);font-size:14px;font-family:var(--font);color:var(--tm);background:#fff;outline:none;appearance:none;}
+.form-select:focus{border-color:var(--terra);}
+.form-hint{font-size:11px;color:var(--ts);margin-top:5px;line-height:1.5;}
+.btn-primary{width:100%;padding:16px;background:var(--terra);color:#fff;border:none;border-radius:var(--r-md);font-size:15px;font-weight:700;font-family:var(--font);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:9px;transition:opacity .2s;}
+.btn-primary:hover{opacity:.9;}
+.btn-primary:disabled{opacity:.45;cursor:not-allowed;}
+.error-msg{background:var(--red-l);border:1px solid #FCA5A5;border-radius:var(--r-sm);padding:10px 14px;font-size:12px;color:var(--red);margin-bottom:14px;display:none;}
+.success-msg{background:var(--green-l);border:1px solid #9FD9BC;border-radius:var(--r-sm);padding:10px 14px;font-size:12px;color:var(--green-d);margin-bottom:14px;display:none;}
+
+/* SHARED TOP BAR (used by dashboard, participant, admin) */
+.top-bar{padding:24px 20px 22px;}
+.top-bar-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
+.top-bar-brand{display:flex;align-items:center;gap:10px;}
+.top-bar-icon{width:38px;height:38px;background:rgba(255,255,255,.2);border-radius:11px;display:flex;align-items:center;justify-content:center;}
+.top-bar-icon i{font-size:20px;color:#fff;}
+.top-bar-title{font-size:16px;font-weight:700;color:#fff;}
+.top-bar-subtitle{font-size:12px;color:rgba(255,255,255,.7);}
+.top-bar-actions{display:flex;gap:8px;}
+.btn-ghost{background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);border-radius:9px;padding:7px 12px;font-size:12px;font-weight:600;color:#fff;cursor:pointer;font-family:var(--font);display:flex;align-items:center;gap:5px;white-space:nowrap;}
+.top-bar-welcome{font-size:22px;font-weight:700;color:#fff;margin-bottom:3px;}
+.top-bar-sub{font-size:13px;color:rgba(255,255,255,.7);}
+.p-body{flex:1;padding-bottom:80px;}
+.section{padding:20px 16px 0;}
+.slabel{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1.2px;color:var(--ts);margin-bottom:12px;display:flex;align-items:center;justify-content:space-between;gap:8px;}
+.card{background:#fff;border-radius:var(--r-lg);border:.5px solid #E8DDD4;padding:18px;box-shadow:var(--shadow);}
+.mt-16{margin-top:16px;}.mt-12{margin-top:12px;}.mt-8{margin-top:8px;}
+
+/* ── DASHBOARD ── */
+.dash-hero{background:var(--terra);}
+.role-chip{display:inline-flex;align-items:center;gap:4px;font-size:10px;font-weight:700;padding:3px 9px;border-radius:99px;text-transform:uppercase;letter-spacing:.4px;}
+.role-chip.r-manager{background:var(--purple-l);color:var(--purple-d);}
+.role-chip.r-admin{background:var(--blue-l);color:var(--blue-d);}
+.role-chip.r-participant{background:var(--green-l);color:var(--green-d);}
+.track-card{background:#fff;border-radius:var(--r-md);border:.5px solid #E8DDD4;padding:16px;display:flex;align-items:center;gap:13px;box-shadow:var(--shadow);cursor:pointer;transition:transform .15s,box-shadow .15s;}
+.track-card:hover{transform:translateY(-1px);box-shadow:var(--shadow-lg);}
+.track-card:active{transform:translateY(0);}
+.track-ic{width:44px;height:44px;border-radius:13px;background:var(--terra-p);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.track-ic i{font-size:21px;color:var(--terra);}
+.track-card-body{flex:1;min-width:0;}
+.track-name{font-size:14px;font-weight:700;color:var(--tm);margin-bottom:3px;}
+.track-meta{display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
+.track-chev{color:var(--terra-l);font-size:18px;flex-shrink:0;}
+.track-list{display:flex;flex-direction:column;gap:10px;}
+.empty-state{text-align:center;padding:36px 20px;}
+.empty-state i{font-size:40px;color:var(--terra-l);display:block;margin-bottom:10px;}
+.empty-state p{font-size:13px;color:var(--ts);line-height:1.6;}
+
+.join-card{background:#fff;border-radius:var(--r-lg);border:1.5px dashed var(--terra-l);padding:18px;}
+.join-card h4{font-size:13px;font-weight:700;color:var(--tm);margin-bottom:4px;}
+.join-card p{font-size:12px;color:var(--ts);margin-bottom:12px;line-height:1.5;}
+.join-row{display:flex;gap:8px;}
+.access-code-input{flex:1;padding:12px 14px;border:1.5px solid var(--cream-d);border-radius:var(--r-md);font-size:15px;font-weight:700;letter-spacing:2px;text-transform:uppercase;font-family:var(--font);color:var(--tm);background:#fff;outline:none;text-align:center;}
+.access-code-input:focus{border-color:var(--terra);}
+.access-code-input::placeholder{letter-spacing:1px;font-weight:600;}
+.btn-join{padding:12px 18px;background:var(--terra);color:#fff;border:none;border-radius:var(--r-md);font-size:13px;font-weight:700;cursor:pointer;font-family:var(--font);display:flex;align-items:center;gap:6px;white-space:nowrap;transition:opacity .2s;}
+.btn-join:hover{opacity:.9;}
+.btn-join:disabled{opacity:.45;cursor:not-allowed;}
+
+.btn-create-track{width:100%;padding:14px;background:var(--purple);color:#fff;border:none;border-radius:var(--r-md);font-size:14px;font-weight:700;cursor:pointer;font-family:var(--font);display:flex;align-items:center;justify-content:center;gap:8px;transition:opacity .2s;}
+.btn-create-track:hover{opacity:.9;}
+
+/* ── BREADCRUMB / BACK NAV (sits inside colored top bars) ── */
+.crumb-back{display:flex;align-items:center;gap:6px;font-size:12px;font-weight:700;color:rgba(255,255,255,.85);cursor:pointer;margin-bottom:10px;}
+.crumb-back i{font-size:15px;}
+
+/* ── TRACK MANAGER MODAL (create track) ── */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:1000;display:none;flex-direction:column;align-items:center;justify-content:center;padding:20px;}
+.modal-overlay.open{display:flex;}
+.modal-card{background:#fff;border-radius:var(--r-xl);width:100%;max-width:380px;max-height:90vh;overflow-y:auto;box-shadow:var(--shadow-lg);}
+.modal-header{background:var(--tm);padding:18px 20px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:2;}
+.modal-header h3{font-size:16px;font-weight:700;color:#fff;}
+.btn-close-modal{background:rgba(255,255,255,.15);border:none;border-radius:8px;width:32px;height:32px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:#fff;font-size:18px;flex-shrink:0;}
+.modal-body{padding:20px;}
+.modal-body .form-hint{margin-bottom:10px;}
+.chip-input-row{display:flex;gap:8px;margin-bottom:8px;}
+.chip-list{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:4px;}
+.email-chip{display:inline-flex;align-items:center;gap:6px;background:var(--purple-l);color:var(--purple-d);border-radius:99px;padding:5px 6px 5px 12px;font-size:12px;font-weight:600;}
+.email-chip button{background:rgba(74,36,112,.12);border:none;border-radius:50%;width:18px;height:18px;color:var(--purple-d);font-size:12px;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+.access-code-display{background:var(--cream);border:1.5px dashed var(--terra-l);border-radius:var(--r-md);padding:16px;text-align:center;margin-bottom:14px;}
+.access-code-display .code{font-size:26px;font-weight:700;letter-spacing:4px;color:var(--terra);font-family:var(--font);}
+.access-code-display p{font-size:11px;color:var(--ts);margin-top:6px;}
+
+/* ── ADMIN: track header chip ── */
+.admin-track-pill{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.25);border-radius:99px;padding:5px 11px;font-size:11px;font-weight:700;color:#fff;margin-top:8px;}
+.admin-access-code-pill{display:inline-flex;align-items:center;gap:5px;background:rgba(255,255,255,.15);border-radius:99px;padding:4px 10px;font-size:11px;font-weight:700;color:#fff;letter-spacing:1px;}
+
+/* TRACK */
+.track{margin-bottom:20px;}
+.track-lbl{display:flex;justify-content:space-between;margin-bottom:5px;flex-wrap:wrap;gap:4px;}
+.tl{font-size:10px;font-weight:700;color:var(--ts);}
+.tline{height:8px;background:var(--cream-d);border-radius:99px;position:relative;}
+.tfill{height:100%;background:var(--terra);border-radius:99px;transition:width .5s;}
+.tdots{display:flex;justify-content:space-between;margin-top:6px;}
+.dot{width:13px;height:13px;border-radius:50%;border:2.5px solid var(--terra-l);background:#fff;transition:.3s;}
+.dot.r{background:var(--terra);border-color:var(--terra);}
+.dot.reached{background:var(--green);border-color:var(--green);}
+
+/* STAMP GRID */
+.sgrid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:16px;}
+.stamp{width:100%;aspect-ratio:1;border-radius:50%;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;}
+.stamp.col{background:var(--terra-p);border:2.5px solid var(--terra);color:var(--terra);}
+.stamp.unc{background:#fff;border:2.5px dashed var(--terra-l);}
+.stamp.col.milestone{border-color:var(--green);background:var(--green-l);color:var(--green);}
+.stamp-cat-svg{position:absolute;left:50%;top:52%;transform:translate(-50%,-50%);width:68%;height:54%;color:currentColor;opacity:.18;z-index:1;pointer-events:none;}
+.stamp-cat-svg path{fill:currentColor;}
+.snum{font-size:22px;font-weight:700;line-height:1;opacity:.7;display:block;text-align:center;}
+.ptxt{font-size:14px;color:var(--ts);}
+.ptxt strong{color:var(--tm);font-weight:700;}
+
+/* REWARD QR SECTION (dynamic milestones) */
+.qr-section{margin-top:16px;border-top:1px solid var(--cream-d);padding-top:16px;}
+.qr-section h4{font-size:13px;font-weight:700;color:var(--tm);margin-bottom:4px;}
+.qr-section p{font-size:12px;color:var(--ts);margin-bottom:12px;line-height:1.5;}
+.qr-cards{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.qr-cards.cols-1{grid-template-columns:1fr;max-width:160px;margin:0 auto;}
+.qr-cards.cols-3{grid-template-columns:1fr 1fr 1fr;}
+.qr-card{border-radius:var(--r-md);border:1.5px solid #E8DDD4;padding:14px;text-align:center;transition:.3s;}
+.qr-card.active-qr{border-color:var(--terra);background:var(--terra-p);}
+.qr-card.locked{opacity:.4;}
+.qr-card.redeemed-qr{border-color:#999;background:#F5F2EE;}
+.qr-box{width:76px;height:76px;border-radius:12px;background:#fff;border:1.5px solid var(--cream-d);margin:0 auto 10px;display:flex;align-items:center;justify-content:center;overflow:hidden;}
+.qr-card.active-qr .qr-box{border-color:var(--terra-l);background:#fff;}
+.qr-card.redeemed-qr .qr-box{background:#F0EDEA;border-color:#ccc;}
+.qr-box svg{opacity:1;}
+.qr-lbl{font-size:12px;font-weight:700;color:var(--tm);margin-bottom:3px;}
+.qr-sub{font-size:11px;color:var(--ts);}
+.qr-card.redeemed-qr .qr-lbl,.qr-card.redeemed-qr .qr-sub{color:#999;}
+.redeemed-tag{display:inline-flex;align-items:center;gap:3px;font-size:10px;font-weight:700;padding:3px 8px;border-radius:99px;background:#E0D8D0;color:#888;margin-top:6px;}
+
+/* SESSION LIST (participant) */
+.sess-grid{display:grid;gap:10px;}
+.sess-card{background:#fff;border-radius:var(--r-md);border:.5px solid #E8DDD4;padding:14px 15px;display:flex;gap:12px;align-items:flex-start;box-shadow:var(--shadow);}
+.sess-ic{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.sess-ic.col{background:var(--terra-p);}.sess-ic.col i{color:var(--terra);}
+.sess-ic.avl{background:var(--blue-l);}.sess-ic.avl i{color:var(--blue);}
+.sess-ic.upc{background:var(--cream-d);}.sess-ic.upc i{color:#A09080;}
+.sname{font-size:14px;font-weight:700;color:var(--tm);}
+.stype{font-size:11px;color:var(--ts);font-weight:700;text-transform:uppercase;letter-spacing:.6px;margin:2px 0 3px;}
+.sdesc{font-size:12px;color:var(--ts);line-height:1.5;margin-bottom:6px;}
+.stop{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:2px;}
+.pb{font-size:11px;font-weight:700;padding:3px 9px;border-radius:99px;background:var(--blue-l);color:var(--blue);}
+.spill{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:700;padding:3px 10px;border-radius:99px;}
+.spill.col{background:var(--green-l);color:var(--green-d);}
+.spill.avl{background:var(--blue-l);color:var(--blue-d);}
+.spill.upc{background:var(--cream-d);color:var(--ts);}
+.sess-meta{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px;}
+.sess-meta-pill{display:inline-flex;align-items:center;gap:4px;font-size:10px;font-weight:600;color:var(--ts);}
+.sess-meta-pill i{font-size:11px;color:var(--terra-l);}
+.scan-ts{font-size:11px;color:var(--ts);margin-top:5px;display:flex;align-items:center;gap:4px;}
+.scan-ts i{font-size:12px;color:var(--terra-l);}
+
+.sess-pager{display:flex;align-items:center;justify-content:space-between;margin-top:10px;gap:8px;}
+.sess-pager-info{font-size:12px;color:var(--ts);font-weight:600;text-align:center;flex:1;}
+.btn-pager{width:36px;height:36px;border:1.5px solid var(--cream-d);border-radius:50%;background:#fff;color:var(--ts);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:18px;transition:.2s;flex-shrink:0;}
+.btn-pager:hover:not(:disabled){background:var(--cream-d);color:var(--tm);}
+.btn-pager:disabled{opacity:.3;cursor:not-allowed;}
+
+.p-actions{padding:20px 16px 0;display:flex;flex-direction:column;gap:10px;}
+.btn-scan{background:transparent;color:var(--terra);border:1.5px solid var(--terra);border-radius:var(--r-md);padding:13px 16px;font-size:14px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;width:100%;font-family:var(--font);transition:background .2s,color .2s;}
+.btn-scan:hover{background:var(--terra-p);}
+.btn-scan:disabled{opacity:.35;cursor:not-allowed;}
+
+/* QR SCANNER MODAL */
+.scanner-modal{background:#fff;border-radius:var(--r-xl);width:100%;max-width:380px;overflow:hidden;box-shadow:var(--shadow-lg);}
+.scanner-header{background:var(--tm);padding:18px 20px;display:flex;align-items:center;justify-content:space-between;}
+.scanner-header h3{font-size:16px;font-weight:700;color:#fff;}
+.scanner-body{padding:20px;}
+.scanner-viewfinder{position:relative;width:100%;padding-bottom:100%;border-radius:var(--r-lg);overflow:hidden;background:#000;margin-bottom:16px;}
+.scanner-viewfinder video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;}
+.scanner-viewfinder canvas{position:absolute;inset:0;width:100%;height:100%;display:none;}
+.scan-guide{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none;}
+.scan-guide-box{width:55%;height:55%;border:3px solid rgba(255,255,255,.85);border-radius:12px;box-shadow:0 0 0 2000px rgba(0,0,0,.4);}
+.scanner-status{text-align:center;font-size:13px;color:var(--ts);margin-bottom:14px;min-height:20px;font-weight:500;}
+.scanner-status.error{color:var(--red);}
+.scanner-note{font-size:11px;color:var(--ts);text-align:center;line-height:1.6;}
+.scan-result-card{display:none;background:var(--green-l);border:1.5px solid var(--green);border-radius:var(--r-md);padding:16px;text-align:center;margin-bottom:14px;}
+.scan-result-card.error-card{background:var(--red-l);border-color:var(--red);}
+.scan-result-icon{font-size:32px;margin-bottom:8px;}
+.scan-result-card h4{font-size:15px;font-weight:700;color:var(--green-d);margin-bottom:4px;}
+.scan-result-card.error-card h4{color:var(--red);}
+.scan-result-card p{font-size:12px;color:var(--green-d);line-height:1.5;}
+.scan-result-card.error-card p{color:var(--red);}
+
+/* ADMIN HEADER */
+.a-header{background:var(--navy);padding:24px 20px 20px;}
+.a-header p{font-size:13px;color:rgba(255,255,255,.65);}
+.stat-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;}
+.stat-card{background:#fff;border-radius:var(--r-md);border:.5px solid #E8DDD4;padding:14px 16px;text-align:center;box-shadow:var(--shadow);}
+.stat-num{font-size:28px;font-weight:700;color:var(--terra);}
+.stat-num.green{color:var(--green);}
+.stat-lbl{font-size:11px;color:var(--ts);font-weight:600;margin-top:3px;}
+
+/* QR PANEL */
+.qr-panel{background:#fff;border-radius:var(--r-lg);border:.5px solid #E8DDD4;padding:16px;box-shadow:var(--shadow);}
+.qr-panel-select-row{display:flex;gap:8px;align-items:center;margin-bottom:14px;}
+.qr-session-select{flex:1;padding:10px 12px;border:1.5px solid var(--cream-d);border-radius:var(--r-md);font-size:13px;font-family:var(--font);color:var(--tm);background:#fff;outline:none;appearance:none;}
+.qr-session-select:focus{border-color:var(--terra);}
+.qr-panel-body{display:grid;grid-template-columns:124px minmax(0,1fr);gap:12px;align-items:start;}
+@media(max-width:380px){.qr-panel-body{grid-template-columns:1fr;}}
+.qr-display-wrap{display:flex;flex-direction:column;gap:8px;align-items:center;}
+.qr-display-box{width:124px;height:124px;background:#fff;border:1px solid #E8DDD4;border-radius:12px;display:flex;align-items:center;justify-content:center;overflow:hidden;padding:6px;}
+.qr-display-box img,.qr-display-box canvas{width:100%;height:100%;image-rendering:pixelated;}
+.btn-download-qr{width:124px;padding:8px;background:#fff;color:var(--navy);border:1.5px solid var(--blue);border-radius:var(--r-sm);font-size:11px;font-weight:700;cursor:pointer;font-family:var(--font);display:flex;align-items:center;justify-content:center;gap:5px;transition:background .2s;white-space:nowrap;}
+.btn-download-qr:hover{background:var(--blue-l);}
+.qr-controls{display:flex;flex-direction:column;gap:8px;}
+.qr-status-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+.qr-status-pill{font-size:11px;font-weight:700;padding:4px 10px;border-radius:99px;}
+.qr-status-pill.inactive{background:var(--gray-l);color:var(--gray);}
+.qr-status-pill.active{background:var(--green-l);color:var(--green-d);}
+.scan-count-badge{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:700;background:var(--blue-l);color:var(--blue-d);border-radius:99px;padding:3px 9px;}
+.selected-session-mini{font-size:11px;color:var(--ts);line-height:1.45;padding:1px 0 2px;}
+.selected-session-mini strong{font-size:12px;color:var(--tm);font-weight:700;}
+.qr-primary-row{display:grid;grid-template-columns:minmax(108px,.75fr) minmax(0,1fr);gap:8px;align-items:center;}
+.qr-primary-row .duration-select,.qr-primary-row .btn-activate{height:38px;}
+.duration-select{width:100%;padding:8px 10px;border:1.5px solid var(--cream-d);border-radius:var(--r-sm);font-size:12px;font-family:var(--font);color:var(--tm);background:#fff;outline:none;}
+.duration-select:focus{border-color:var(--terra);}
+.btn-activate{width:100%;padding:9px 12px;background:var(--terra);color:#fff;border:none;border-radius:var(--r-sm);font-size:12px;font-weight:700;cursor:pointer;font-family:var(--font);display:flex;align-items:center;justify-content:center;gap:6px;transition:opacity .2s;}
+.btn-activate:hover{opacity:.9;}
+.btn-activate:disabled{opacity:.4;cursor:not-allowed;}
+.countdown{font-size:12px;font-weight:700;color:var(--amber);display:flex;align-items:center;gap:4px;}
+.countdown.expired{color:var(--red);}
+.countdown i{font-size:14px;}
+.qr-action-row{display:grid;grid-template-columns:1fr 38px 38px;gap:8px;align-items:center;}
+.btn-mini-icon{width:38px;height:38px;background:#fff;color:var(--ts);border:1.5px solid var(--cream-d);border-radius:var(--r-sm);font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:.2s;}
+.btn-mini-icon:hover{background:var(--cream-d);}
+.btn-mini-icon.danger{color:var(--red);border-color:#F3B6B6;}
+.btn-mini-icon.danger:hover{background:var(--red-l);}
+.selected-session-edit-slot{margin-top:10px;}
+.selected-session-edit-slot:empty{display:none;}
+
+/* ADD SESSION FORM */
+.btn-add-session{width:100%;padding:11px;background:#fff;color:var(--terra);border:1.5px dashed var(--terra-l);border-radius:var(--r-md);font-size:13px;font-weight:700;cursor:pointer;font-family:var(--font);display:flex;align-items:center;justify-content:center;gap:7px;margin-bottom:10px;transition:background .2s;}
+.btn-add-session:hover{background:var(--terra-p);}
+.new-session-form{background:#fff;border-radius:var(--r-md);border:1.5px solid var(--terra);padding:16px;margin-bottom:10px;display:none;flex-direction:column;gap:10px;box-shadow:var(--shadow);}
+.new-session-form.open{display:flex;}
+.new-session-form h4{font-size:13px;font-weight:700;color:var(--tm);}
+.new-form-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.new-form-input{width:100%;padding:10px 12px;border:1.5px solid var(--cream-d);border-radius:var(--r-sm);font-size:13px;font-family:var(--font);color:var(--tm);background:#fff;outline:none;}
+.new-form-input:focus{border-color:var(--terra);}
+.new-form-select{width:100%;padding:10px 12px;border:1.5px solid var(--cream-d);border-radius:var(--r-sm);font-size:13px;font-family:var(--font);color:var(--tm);background:#fff;outline:none;appearance:none;}
+.new-form-select:focus{border-color:var(--terra);}
+.new-form-actions{display:flex;gap:8px;}
+.btn-create{flex:1;padding:10px;background:var(--terra);color:#fff;border:none;border-radius:var(--r-sm);font-size:13px;font-weight:700;cursor:pointer;font-family:var(--font);display:flex;align-items:center;justify-content:center;gap:6px;transition:opacity .2s;}
+.btn-create:hover{opacity:.9;}
+.btn-create:disabled{opacity:.4;cursor:not-allowed;}
+.btn-cancel-new{padding:10px 14px;background:#fff;color:var(--ts);border:1.5px solid var(--cream-d);border-radius:var(--r-sm);font-size:13px;font-weight:700;cursor:pointer;font-family:var(--font);}
+
+/* INLINE EDIT FORM */
+.sess-edit-form{background:var(--cream);border-radius:var(--r-md);padding:12px;margin-top:10px;border:1.5px solid var(--terra-l);display:none;flex-direction:column;gap:9px;}
+.sess-edit-form.open{display:flex;}
+.edit-form-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.edit-form-input{width:100%;padding:9px 11px;border:1.5px solid var(--cream-d);border-radius:var(--r-sm);font-size:12px;font-family:var(--font);color:var(--tm);background:#fff;outline:none;}
+.edit-form-input:focus{border-color:var(--terra);}
+.edit-form-select{width:100%;padding:9px 11px;border:1.5px solid var(--cream-d);border-radius:var(--r-sm);font-size:12px;font-family:var(--font);color:var(--tm);background:#fff;outline:none;appearance:none;}
+.edit-form-select:focus{border-color:var(--terra);}
+.edit-form-actions{display:flex;gap:7px;}
+.btn-save{flex:1;padding:9px;background:var(--terra);color:#fff;border:none;border-radius:var(--r-sm);font-size:12px;font-weight:700;cursor:pointer;font-family:var(--font);display:flex;align-items:center;justify-content:center;gap:5px;transition:opacity .2s;}
+.btn-save:hover{opacity:.9;}
+.btn-cancel-edit{padding:9px 14px;background:#fff;color:var(--ts);border:1.5px solid var(--cream-d);border-radius:var(--r-sm);font-size:12px;font-weight:700;cursor:pointer;font-family:var(--font);}
+.btn-cancel-edit:hover{background:var(--cream-d);}
+
+/* REWARD TEMPLATE EDITOR */
+.milestone-row{display:flex;gap:8px;align-items:flex-start;background:var(--cream);border-radius:var(--r-md);padding:12px;margin-bottom:8px;}
+.milestone-row-fields{flex:1;display:flex;flex-direction:column;gap:7px;}
+.milestone-row-line1{display:grid;grid-template-columns:72px 1fr;gap:7px;}
+.milestone-input{width:100%;padding:8px 10px;border:1.5px solid var(--cream-d);border-radius:var(--r-sm);font-size:12px;font-family:var(--font);color:var(--tm);background:#fff;outline:none;}
+.milestone-input:focus{border-color:var(--terra);}
+.milestone-icon-select{width:100%;padding:8px 10px;border:1.5px solid var(--cream-d);border-radius:var(--r-sm);font-size:12px;font-family:var(--font);color:var(--tm);background:#fff;outline:none;appearance:none;}
+.btn-remove-milestone{width:32px;height:32px;background:#fff;color:var(--red);border:1.5px solid #F3B6B6;border-radius:var(--r-sm);font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:.2s;}
+.btn-remove-milestone:hover{background:var(--red-l);}
+.btn-add-milestone{width:100%;padding:9px;background:#fff;color:var(--terra);border:1.5px dashed var(--terra-l);border-radius:var(--r-sm);font-size:12px;font-weight:700;cursor:pointer;font-family:var(--font);display:flex;align-items:center;justify-content:center;gap:6px;margin-bottom:10px;transition:background .2s;}
+.btn-add-milestone:hover{background:var(--terra-p);}
+.template-total-row{display:flex;align-items:center;gap:10px;margin-bottom:12px;background:var(--cream);border-radius:var(--r-md);padding:12px;}
+.template-total-row label{font-size:12px;font-weight:700;color:var(--ts);flex-shrink:0;}
+.template-total-row input{width:70px;padding:8px 10px;border:1.5px solid var(--cream-d);border-radius:var(--r-sm);font-size:13px;font-weight:700;text-align:center;font-family:var(--font);color:var(--tm);background:#fff;outline:none;}
+.btn-save-template{width:100%;padding:12px;background:var(--terra);color:#fff;border:none;border-radius:var(--r-md);font-size:13px;font-weight:700;cursor:pointer;font-family:var(--font);display:flex;align-items:center;justify-content:center;gap:7px;transition:opacity .2s;}
+.btn-save-template:hover{opacity:.9;}
+
+/* DEMO VIEW (read-only participant preview inside admin panel) */
+.btn-demo-view{width:100%;padding:13px;background:#fff;color:var(--navy);border:1.5px solid var(--navy);border-radius:var(--r-md);font-size:13px;font-weight:700;cursor:pointer;font-family:var(--font);display:flex;align-items:center;justify-content:center;gap:8px;transition:background .2s;}
+.btn-demo-view:hover{background:var(--blue-l);}
+.demo-overlay{position:fixed;inset:0;background:#E4DDD5;z-index:2000;display:none;flex-direction:column;align-items:center;overflow-y:auto;}
+.demo-overlay.open{display:flex;}
+.demo-frame{width:100%;max-width:430px;min-height:100vh;background:var(--cream);position:relative;}
+.demo-watermark-bar{position:sticky;top:0;z-index:50;background:var(--tm);color:#fff;padding:10px 16px;display:flex;align-items:center;justify-content:space-between;font-size:12px;font-weight:700;}
+.demo-watermark-bar span{display:flex;align-items:center;gap:6px;}
+.demo-watermark-bar button{background:rgba(255,255,255,.15);border:none;border-radius:8px;padding:6px 12px;color:#fff;font-size:11px;font-weight:700;cursor:pointer;font-family:var(--font);display:flex;align-items:center;gap:5px;}
+.demo-readonly-shield{position:absolute;inset:0;z-index:40;cursor:not-allowed;background:transparent;}
+.demo-badge-fixed{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);background:var(--tm);color:#fff;font-size:11px;font-weight:700;padding:8px 16px;border-radius:99px;display:flex;align-items:center;gap:6px;box-shadow:var(--shadow-lg);z-index:60;max-width:90%;text-align:center;}
+
+/* ADMIN PARTICIPANTS */
+.search-wrap{position:relative;margin-bottom:12px;}
+.search-input{width:100%;padding:12px 16px 12px 42px;border:1.5px solid var(--cream-d);border-radius:var(--r-md);font-size:14px;font-family:var(--font);color:var(--tm);background:#fff;outline:none;transition:border-color .2s;}
+.search-input:focus{border-color:var(--terra);}
+.search-icon{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--ts);font-size:18px;pointer-events:none;}
+.a-table{display:flex;flex-direction:column;gap:10px;}
+.a-card{background:#fff;border-radius:var(--r-md);border:.5px solid #E8DDD4;padding:16px;box-shadow:var(--shadow);}
+.a-card-top{display:flex;align-items:center;gap:11px;margin-bottom:12px;}
+.avatar{width:38px;height:38px;border-radius:50%;background:var(--terra-p);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:var(--terra);flex-shrink:0;}
+.a-pname{font-size:14px;font-weight:700;color:var(--tm);}
+.a-pmeta{font-size:11px;color:var(--ts);}
+.a-stamp-bar{margin-bottom:12px;}
+.a-stamp-label{display:flex;justify-content:space-between;margin-bottom:4px;}
+.a-stamp-lbl{font-size:11px;font-weight:600;color:var(--ts);}
+.a-stamp-val{font-size:11px;font-weight:700;color:var(--tm);}
+.mini-bar{height:6px;background:var(--cream-d);border-radius:99px;}
+.mini-fill{height:100%;background:var(--terra);border-radius:99px;}
+.stamp-history{margin-bottom:10px;border-radius:var(--r-sm);background:var(--cream);overflow:hidden;}
+.stamp-history-title{font-size:11px;font-weight:700;color:var(--ts);text-transform:uppercase;letter-spacing:.8px;padding:9px 10px;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:8px;list-style:none;}
+.stamp-history-title::-webkit-details-marker{display:none;}
+.stamp-history-title::after{content:'⌄';font-size:13px;color:var(--terra);transition:transform .2s;}
+.stamp-history[open] .stamp-history-title::after{transform:rotate(180deg);}
+.history-count{font-size:10px;font-weight:700;letter-spacing:0;text-transform:none;border-radius:99px;background:var(--blue-l);color:var(--blue-d);padding:3px 8px;margin-left:auto;}
+.stamp-history-rows{display:flex;flex-direction:column;gap:4px;padding:0 8px 8px;}
+.shrow{display:flex;align-items:center;justify-content:space-between;font-size:11px;padding:5px 8px;border-radius:7px;background:var(--cream);}
+.shrow-name{color:var(--tm);font-weight:600;}
+.shrow-ts{color:var(--ts);display:flex;align-items:center;gap:3px;}
+.shrow-ts i{font-size:11px;color:var(--terra-l);}
+.reward-rows{display:flex;flex-direction:column;gap:7px;}
+.rrow{display:flex;align-items:center;justify-content:space-between;padding:9px 11px;border-radius:var(--r-sm);background:var(--cream);}
+.rleft{display:flex;align-items:center;gap:8px;}
+.ricon{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:var(--navy);color:#fff;font-size:13px;}
+.rname{font-size:12px;font-weight:700;color:var(--tm);}
+.rsub{font-size:10px;color:var(--ts);}
+.rbadge{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:700;padding:4px 10px;border-radius:99px;white-space:nowrap;}
+.rbadge.done{background:var(--green-l);color:var(--green-d);}
+.rbadge.locked{background:var(--gray-l);color:var(--gray);}
+.btn-mark{font-size:11px;font-weight:700;padding:6px 12px;border-radius:99px;border:1.5px solid var(--terra);background:#fff;color:var(--terra);cursor:pointer;font-family:var(--font);transition:.2s;white-space:nowrap;}
+.btn-mark:hover{background:var(--terra-p);}
+.redeemed-date{font-size:10px;color:var(--ts);margin-top:2px;}
+.no-results{text-align:center;padding:32px 20px;color:var(--ts);font-size:14px;}
+.no-results i{font-size:40px;display:block;margin-bottom:10px;color:var(--terra-l);}
+
+/* MANAGE ADMINS (track manager adding admins to a track) */
+.admin-add-row{display:flex;gap:8px;}
+.admin-add-row input{flex:1;}
+.admin-list{display:flex;flex-direction:column;gap:6px;margin-top:10px;}
+.admin-list-row{display:flex;align-items:center;justify-content:space-between;background:var(--cream);border-radius:var(--r-sm);padding:9px 12px;font-size:12px;}
+.admin-list-row strong{color:var(--tm);font-weight:700;}
+</style>
+</head>
+<body>
+<div class="app">
+
+<!-- AUTH -->
+<div class="screen active" id="screen-auth">
+  <div class="auth-hero">
+    <div class="auth-hero-icon"><i class="ti ti-robot"></i></div>
+    <h1>AI Community</h1><h2>Stamp Journey</h2>
+    <p>Join tracks, collect stamps as you take part, and unlock rewards along the way.</p>
+  </div>
+  <div class="auth-body">
+    <div class="auth-tabs">
+      <button class="auth-tab active" onclick="switchAuthTab('login')">Sign In</button>
+      <button class="auth-tab" onclick="switchAuthTab('signup')">Create Account</button>
+    </div>
+    <div id="form-login">
+      <div id="login-error" class="error-msg"></div>
+      <div class="form-group"><label class="form-label">Organisation Email</label><input class="form-input" id="login-email" type="email" placeholder="you@company.com"></div>
+      <div class="form-group"><label class="form-label">Password</label><input class="form-input" id="login-password" type="password" placeholder="••••••••"></div>
+      <button class="btn-primary" id="btn-login" onclick="handleLogin()"><i class="ti ti-login"></i> Sign In</button>
+    </div>
+    <div id="form-signup" style="display:none;">
+      <div id="signup-error" class="error-msg"></div>
+      <div class="form-group"><label class="form-label">Full Name</label><input class="form-input" id="su-name" type="text" placeholder="e.g. Arisa Tanaka"></div>
+      <div class="form-group"><label class="form-label">Facility</label>
+        <select class="form-select" id="su-facility"><option value="">Select your facility</option><option>Bangkok HQ</option><option>Chiang Mai Branch</option><option>Phuket Office</option><option>Remote / WFH</option></select></div>
+      <div class="form-group"><label class="form-label">Organisation Email</label><input class="form-input" id="su-email" type="email" placeholder="you@company.com"><p class="form-hint">Use your official company email address.</p></div>
+      <div class="form-group"><label class="form-label">Password</label><input class="form-input" id="su-password" type="password" placeholder="Min. 8 characters"></div>
+      <button class="btn-primary" id="btn-signup" onclick="handleSignUp()"><i class="ti ti-user-plus"></i> Create Account</button>
+    </div>
+  </div>
+</div>
+
+<!-- DASHBOARD -->
+<div class="screen" id="screen-dashboard">
+  <div class="top-bar dash-hero">
+    <div class="top-bar-row">
+      <div class="top-bar-brand">
+        <div class="top-bar-icon"><i class="ti ti-robot"></i></div>
+        <div><div class="top-bar-title">AI Community</div><div class="top-bar-subtitle">Stamp Journey</div></div>
+      </div>
+      <button class="btn-ghost" onclick="logout()"><i class="ti ti-logout" style="font-size:13px;"></i> Sign out</button>
+    </div>
+    <div class="top-bar-welcome" id="dash-welcome">Hello 👋</div>
+    <div class="top-bar-sub" id="dash-sub"></div>
+  </div>
+  <div class="p-body">
+    <div class="section">
+      <div class="slabel">Your tracks</div>
+      <div class="track-list" id="dash-track-list"></div>
+    </div>
+
+    <div class="section mt-16">
+      <div class="slabel">Join a track</div>
+      <div class="join-card">
+        <h4><i class="ti ti-ticket" style="color:var(--terra);margin-right:5px;"></i>Have an access code?</h4>
+        <p>Enter the code your facilitator shared to join as a participant.</p>
+        <div id="join-error" class="error-msg"></div>
+        <div class="join-row">
+          <input class="access-code-input" id="join-code-input" type="text" maxlength="8" placeholder="CODE">
+          <button class="btn-join" id="btn-join-track" onclick="handleJoinTrack()"><i class="ti ti-arrow-right"></i> Join</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="section mt-16" id="dash-manager-section" style="display:none;">
+      <div class="slabel">Track Manager tools</div>
+      <button class="btn-create-track" onclick="openCreateTrackModal()"><i class="ti ti-plus"></i> Create New Track</button>
+    </div>
+  </div>
+</div>
+
+<!-- PARTICIPANT -->
+<div class="screen" id="screen-participant">
+  <div class="top-bar" style="background:var(--terra);">
+    <div class="top-bar-row">
+      <div class="top-bar-brand">
+        <div class="top-bar-icon"><i class="ti ti-robot"></i></div>
+        <div><div class="top-bar-title" id="p-track-name">Track</div><div class="top-bar-subtitle">Stamp Journey</div></div>
+      </div>
+      <div class="top-bar-actions">
+        <button class="btn-ghost" onclick="goToDashboard()"><i class="ti ti-layout-grid" style="font-size:13px;"></i> Dashboard</button>
+      </div>
+    </div>
+    <div class="top-bar-welcome" id="p-welcome">Hello 👋</div>
+    <div class="top-bar-sub" id="p-facility"></div>
+  </div>
+  <div class="p-body">
+    <div class="section">
+      <div class="slabel">Your stamp card</div>
+      <div class="card">
+        <div class="track">
+          <div class="track-lbl" id="p-track-lbl"></div>
+          <div class="tline"><div class="tfill" id="p-fill"></div></div>
+          <div class="tdots" id="p-dots"></div>
+        </div>
+        <div class="sgrid" id="p-stamps"></div>
+        <p class="ptxt">Collected: <strong id="p-count">0</strong> / <span id="p-total">10</span> stamps</p>
+        <div class="qr-section">
+          <h4>Your rewards</h4>
+          <p>Show your QR code to the facilitator to redeem. Only the facilitator can mark it as redeemed.</p>
+          <div class="qr-cards" id="p-reward-cards"></div>
+        </div>
+      </div>
+    </div>
+    <div class="section mt-16">
+      <div class="slabel">Sessions</div>
+      <div class="sess-grid" id="p-sessions"></div>
+      <div class="sess-pager" id="sess-pager" style="display:none;">
+        <button class="btn-pager" id="btn-prev-sess" onclick="changeSessionPage(-1)" aria-label="Previous sessions"><i class="ti ti-chevron-left"></i></button>
+        <span class="sess-pager-info" id="sess-pager-info"></span>
+        <button class="btn-pager" id="btn-next-sess" onclick="changeSessionPage(1)" aria-label="Next sessions"><i class="ti ti-chevron-right"></i></button>
+      </div>
+    </div>
+    <div class="p-actions" id="p-actions-real">
+      <button class="btn-scan" id="btn-open-scanner" onclick="openScanner()">
+        <i class="ti ti-qrcode-scan"></i> Scan Session QR Code
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ADMIN -->
+<div class="screen" id="screen-admin">
+  <div class="a-header">
+    <div class="top-bar-row">
+      <div><h2 style="font-size:20px;font-weight:700;color:#fff;"><i class="ti ti-shield-check" style="font-size:18px;margin-right:6px;"></i>Admin Panel</h2><p id="a-logged-as"></p></div>
+      <div class="top-bar-actions">
+        <button class="btn-ghost" onclick="goToDashboard()"><i class="ti ti-layout-grid" style="font-size:13px;"></i> Dashboard</button>
+      </div>
+    </div>
+    <div class="admin-track-pill"><i class="ti ti-route" style="font-size:12px;"></i> <span id="a-track-name">Track</span></div>
+    <div class="admin-access-code-pill" style="margin-top:6px;margin-left:0;display:inline-flex;"><i class="ti ti-ticket" style="font-size:11px;"></i> <span id="a-access-code">CODE</span></div>
+  </div>
+  <div class="p-body">
+    <div class="section">
+      <div class="slabel">Overview</div>
+      <div class="stat-grid" id="a-stat-grid"></div>
+    </div>
+
+    <div class="section mt-16">
+      <button class="btn-demo-view" onclick="openDemoView()"><i class="ti ti-eye"></i> Preview as Participant</button>
+    </div>
+
+    <div class="section mt-16">
+      <div class="slabel">Reward Template</div>
+      <div class="qr-panel" id="template-editor"></div>
+    </div>
+
+    <div class="section mt-16">
+      <div class="slabel">Manage Sessions</div>
+      <div class="qr-panel">
+        <div class="qr-panel-select-row">
+          <select class="qr-session-select" id="qr-session-select" onchange="renderQRPanel()">
+            <option value="">— Select a session —</option>
+          </select>
+        </div>
+        <div id="qr-panel-content" style="display:none;">
+          <div class="qr-panel-body">
+            <div class="qr-display-wrap">
+              <div class="qr-display-box" id="qr-panel-box"></div>
+              <button class="btn-download-qr" id="btn-dl-qr" onclick="downloadPanelQR()"><i class="ti ti-download"></i> Download PNG</button>
+            </div>
+            <div class="qr-controls">
+              <div class="qr-status-row">
+                <span class="qr-status-pill inactive" id="qr-panel-status">Inactive</span>
+                <span class="scan-count-badge" id="qr-panel-count"><i class="ti ti-users" style="font-size:10px;"></i> 0 scanned</span>
+              </div>
+              <div class="selected-session-mini" id="selected-session-mini"></div>
+              <div class="qr-primary-row">
+                <select class="duration-select" id="qr-panel-dur">
+                  <option value="5">5 minutes</option><option value="10">10 minutes</option>
+                  <option value="15" selected>15 minutes</option><option value="30">30 minutes</option>
+                  <option value="60">1 hour</option><option value="120">2 hours</option>
+                </select>
+                <button class="btn-activate" id="btn-panel-activate" onclick="activatePanelQR()"><i class="ti ti-qrcode"></i> Activate QR</button>
+              </div>
+              <div class="countdown" id="qr-panel-countdown" style="display:none;"><i class="ti ti-clock"></i> <span></span></div>
+              <div class="qr-action-row">
+                <span></span>
+                <button class="btn-mini-icon" id="btn-selected-edit" title="Edit session" onclick="openSelectedEdit()"><i class="ti ti-pencil"></i></button>
+                <button class="btn-mini-icon danger" id="btn-selected-delete" title="Delete session" onclick="deleteSelectedSession()"><i class="ti ti-trash"></i></button>
+              </div>
+            </div>
+          </div>
+          <div class="selected-session-edit-slot" id="selected-session-card"></div>
+        </div>
+      </div>
+
+      <button class="btn-add-session" id="btn-show-new-form" onclick="toggleNewSessionForm(true)" style="margin-top:12px;"><i class="ti ti-plus"></i> Add New Session</button>
+      <div class="new-session-form" id="new-session-form">
+        <h4><i class="ti ti-plus" style="font-size:13px;color:var(--terra);margin-right:4px;"></i>New Session</h4>
+        <div><label class="form-label" style="font-size:11px;">Session Name</label><input class="new-form-input" id="new-sess-name" type="text" placeholder="e.g. Session 11"></div>
+        <div class="new-form-row">
+          <div><label class="form-label" style="font-size:11px;display:block;margin-bottom:5px;">Type</label>
+            <select class="new-form-select" id="new-sess-type"><option value="Sharing">Sharing</option><option value="Workshop">Workshop</option><option value="Sharing &amp; Workshop">Sharing &amp; Workshop</option></select></div>
+          <div><label class="form-label" style="font-size:11px;display:block;margin-bottom:5px;">Time</label><input class="new-form-input" id="new-sess-time" type="text" placeholder="e.g. 09:00–10:00"></div>
+        </div>
+        <div><label class="form-label" style="font-size:11px;display:block;margin-bottom:5px;">Location</label>
+          <select class="new-form-select" id="new-sess-loc"><option value="Building1">Building1</option><option value="Building2">Building2</option><option value="Building3">Building3</option></select></div>
+        <div><label class="form-label" style="font-size:11px;display:block;margin-bottom:5px;">Description</label><input class="new-form-input" id="new-sess-desc" type="text" placeholder="Short description"></div>
+        <div class="new-form-actions">
+          <button class="btn-create" id="btn-create-session" onclick="createSession()"><i class="ti ti-check"></i> Create Session</button>
+          <button class="btn-cancel-new" onclick="toggleNewSessionForm(false)">Cancel</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="section mt-16">
+      <div class="slabel">Data collections</div>
+      <div class="card" style="display:flex;flex-direction:column;gap:10px;">
+        <select class="qr-session-select" id="data-session-select">
+          <option value="all">All sessions</option>
+        </select>
+        <button class="btn-download-history" style="width:100%;padding:9px 12px;background:#fff;color:var(--green-d);border:1.5px solid var(--green);border-radius:var(--r-sm);font-size:12px;font-weight:700;cursor:pointer;font-family:var(--font);display:flex;align-items:center;justify-content:center;gap:6px;" onclick="downloadSelectedScanHistory()"><i class="ti ti-table-export"></i> Download scan history</button>
+      </div>
+    </div>
+
+    <div class="section mt-16">
+      <div class="slabel">Participants</div>
+      <div class="search-wrap"><i class="ti ti-search search-icon"></i><input class="search-input" id="a-search" type="text" placeholder="Search by name or email…" oninput="renderAdminParticipants()"></div>
+    </div>
+    <div class="section mt-12"><div class="a-table" id="a-table"></div></div>
+  </div>
+</div>
+
+<!-- QR SCANNER MODAL -->
+<div class="modal-overlay" id="scanner-overlay">
+  <div class="scanner-modal">
+    <div class="scanner-header">
+      <h3><i class="ti ti-qrcode-scan" style="margin-right:6px;"></i>Scan Session QR</h3>
+      <button class="btn-close-modal" onclick="closeScanner()"><i class="ti ti-x"></i></button>
+    </div>
+    <div class="scanner-body">
+      <div id="scan-result-card" class="scan-result-card" style="display:none;">
+        <div class="scan-result-icon" id="scan-result-icon">✅</div>
+        <h4 id="scan-result-title">Stamp collected!</h4>
+        <p id="scan-result-body"></p>
+      </div>
+      <div id="scanner-live-area">
+        <div class="scanner-viewfinder">
+          <video id="scanner-video" autoplay muted playsinline></video>
+          <canvas id="scanner-canvas"></canvas>
+          <div class="scan-guide"><div class="scan-guide-box"></div></div>
+        </div>
+        <div class="scanner-status" id="scanner-status">Initialising camera…</div>
+        <p class="scanner-note">Point your camera at the QR code displayed by the facilitator.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CREATE TRACK MODAL (Track Manager) -->
+<div class="modal-overlay" id="create-track-overlay">
+  <div class="modal-card">
+    <div class="modal-header">
+      <h3><i class="ti ti-route" style="margin-right:6px;"></i>Create New Track</h3>
+      <button class="btn-close-modal" onclick="closeCreateTrackModal()"><i class="ti ti-x"></i></button>
+    </div>
+    <div class="modal-body" id="create-track-body">
+      <div id="create-track-error" class="error-msg"></div>
+      <div class="form-group">
+        <label class="form-label">Track Name</label>
+        <input class="form-input" id="ct-name" type="text" placeholder="e.g. AI Community 2026">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Access Code <span style="text-transform:none;font-weight:500;">(optional)</span></label>
+        <input class="form-input" id="ct-code" type="text" maxlength="8" placeholder="Leave blank to auto-generate" style="text-transform:uppercase;letter-spacing:1px;">
+        <p class="form-hint">Participants use this code to join. We'll generate one for you if left blank.</p>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Total Stamps</label>
+        <input class="form-input" id="ct-total" type="number" min="1" max="50" value="10">
+        <p class="form-hint">A default reward template will be generated for this many stamps — the track's admin can edit reward names, icons, and milestone positions later.</p>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Admin Emails <span style="text-transform:none;font-weight:500;">(optional)</span></label>
+        <div class="chip-input-row">
+          <input class="form-input" id="ct-admin-input" type="email" placeholder="admin@company.com" onkeydown="if(event.key==='Enter'){event.preventDefault();addAdminChip();}">
+          <button class="btn-join" type="button" onclick="addAdminChip()"><i class="ti ti-plus"></i></button>
+        </div>
+        <div class="chip-list" id="ct-admin-chips"></div>
+        <p class="form-hint">Each email must already have an account. You'll be added as an admin automatically.</p>
+      </div>
+      <button class="btn-primary" id="btn-do-create-track" onclick="submitCreateTrack()"><i class="ti ti-check"></i> Create Track</button>
+    </div>
+  </div>
+</div>
+
+<!-- READ-ONLY DEMO VIEW OVERLAY (admin "Preview as Participant") -->
+<div class="demo-overlay" id="demo-overlay">
+  <div class="demo-frame">
+    <div class="demo-watermark-bar">
+      <span><i class="ti ti-eye"></i> Preview mode — read only</span>
+      <button onclick="closeDemoView()"><i class="ti ti-x"></i> Exit</button>
+    </div>
+    <div class="top-bar" style="background:var(--terra);">
+      <div class="top-bar-row">
+        <div class="top-bar-brand">
+          <div class="top-bar-icon"><i class="ti ti-robot"></i></div>
+          <div><div class="top-bar-title" id="demo-track-name">Track</div><div class="top-bar-subtitle">Stamp Journey</div></div>
+        </div>
+      </div>
+      <div class="top-bar-welcome">Hello, Participant 👋</div>
+      <div class="top-bar-sub">This is a preview of what participants see</div>
+    </div>
+    <div class="p-body">
+      <div class="section">
+        <div class="slabel">Stamp card</div>
+        <div class="card">
+          <div class="track">
+            <div class="track-lbl" id="demo-track-lbl"></div>
+            <div class="tline"><div class="tfill" id="demo-fill"></div></div>
+            <div class="tdots" id="demo-dots"></div>
+          </div>
+          <div class="sgrid" id="demo-stamps"></div>
+          <p class="ptxt">Collected: <strong id="demo-count">0</strong> / <span id="demo-total">10</span> stamps</p>
+          <div class="qr-section">
+            <h4>Rewards</h4>
+            <p>This is how reward cards will look to participants.</p>
+            <div class="qr-cards" id="demo-reward-cards"></div>
+          </div>
+        </div>
+      </div>
+      <div class="section mt-16">
+        <div class="slabel">Sessions</div>
+        <div class="sess-grid" id="demo-sessions"></div>
+      </div>
+    </div>
+    <div class="demo-readonly-shield" title="Preview only — not interactive"></div>
+  </div>
+  <div class="demo-badge-fixed"><i class="ti ti-lock"></i> Read-only preview — nothing here is clickable</div>
+</div>
+
+</div>
+<script>
+'use strict';
+const GAS_URL = 'https://script.google.com/macros/s/AKfycbx9FDwSPE9aAROR2MU_MYpTI_xP_ZtbqokQTd98Ajx5KnkYqCrp1xqakisNwiHh7Ki9kw/exec';
+
+// ── GLOBAL STATE ──
+var currentUser = null;       // { id, name, facility, email, isTrackManager }
+var myTracks = [];            // [{ trackId, trackName, role, joinedAt }]  role: admin|participant|manager
+var currentTrackId = null;    // track currently open (participant or admin view)
+var currentTrackRole = null;  // role on the currently open track
+
+// Participant-view state
+var trackProgress = null;     // { trackId, trackName, totalStamps, stamps, claimedSessions, scanTimestamps, milestones }
+var allSessions = [];          // sessions for currentTrackId
+
+// Admin-view state
+var adminTrackInfo = null;     // { trackId, trackName, accessCode }
+var adminTemplate = null;      // { totalStamps, milestones:[{position,name,icon}] }
+var adminParticipants = [];    // participants with progress, for currentTrackId
+
+var scanStream = null, scanAnimFrame = null, scanDone = false;
+var countdownTimer = null;
+var sessionPage = 0;
+var SESSION_PAGE_SIZE = 3;
+var LOCATION_OPTIONS = ['Building1','Building2','Building3'];
+var MILESTONE_ICON_OPTIONS = ['ti-coffee','ti-gift','ti-trophy','ti-medal','ti-star','ti-crown','ti-award','ti-sparkles'];
+var pendingAdminEmails = [];
+
+// ─────────────────────────────────────────────────────────────
+// API
+// ─────────────────────────────────────────────────────────────
+function apiRequest(action, payload) {
+  payload = payload || {};
+  payload.action = action;
+  return fetch(GAS_URL, { method:'POST', redirect:'follow', headers:{'Content-Type':'text/plain;charset=utf-8'}, body:JSON.stringify(payload) })
+    .then(function(r){ if(!r.ok) throw new Error('Network error'); return r.json(); })
+    .then(function(res){ if(res.ok!==true) throw new Error(res.message||'Request failed.'); return res; })
+    .catch(function(err){ throw new Error(err.message||String(err)); });
+}
+function busy(id,lbl){ var b=document.getElementById(id); if(!b) return; b.dataset.orig=b.innerHTML; b.disabled=true; b.innerHTML='<i class="ti ti-loader-2"></i> '+lbl; }
+function restore(id){ var b=document.getElementById(id); if(!b) return; if(b.dataset.orig) b.innerHTML=b.dataset.orig; b.disabled=false; }
+function htmlAttr(v){ return String(v||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+// ─────────────────────────────────────────────────────────────
+// NORMALIZERS
+// ─────────────────────────────────────────────────────────────
+function normalizeUser(u){
+  return { id:String(u.id||''), name:String(u.name||''), facility:String(u.facility||''),
+    email:String(u.email||'').toLowerCase(), isTrackManager:Boolean(u.isTrackManager) };
+}
+function normalizeTrackSummary(t){
+  return { trackId:Number(t.trackId), trackName:String(t.trackName||''), role:String(t.role||'').toLowerCase(), joinedAt:String(t.joinedAt||'') };
+}
+function normalizeSession(s){
+  return { id:Number(s.id||0), trackId:Number(s.trackId||0), name:String(s.name||'Session'),
+    type:String(s.type||'Sharing'), desc:String(s.desc||''), icon:String(s.icon||'ti-brain'),
+    location:String(s.location||''), time:String(s.time||''),
+    qrActive:Boolean(s.qrActive), qrExpiresAt:Number(s.qrExpiresAt||0), qrToken:String(s.qrToken||'') };
+}
+function normalizeProgress(p){
+  return { trackId:Number(p.trackId), trackName:String(p.trackName||''), totalStamps:Number(p.totalStamps||10),
+    stamps:Number(p.stamps||0), claimedSessions:(p.claimedSessions||[]).map(Number),
+    scanTimestamps:p.scanTimestamps||{},
+    milestones:(p.milestones||[]).map(function(m){ return { index:Number(m.index), position:Number(m.position),
+      name:String(m.name||'Reward'), icon:String(m.icon||'ti-gift'), eligible:Boolean(m.eligible),
+      redeemed:Boolean(m.redeemed), redeemedAt:m.redeemedAt||null }; }) };
+}
+function normalizeAdminParticipant(p){
+  return { id:String(p.id||''), name:String(p.name||''), facility:String(p.facility||''),
+    email:String(p.email||'').toLowerCase(), joinedAt:String(p.joinedAt||''),
+    stamps:Number(p.stamps||0), claimedSessions:(p.claimedSessions||[]).map(Number),
+    scanTimestamps:p.scanTimestamps||{},
+    milestones:(p.milestones||[]).map(function(m){ return { index:Number(m.index), position:Number(m.position),
+      name:String(m.name||'Reward'), icon:String(m.icon||'ti-gift'), eligible:Boolean(m.eligible),
+      redeemed:Boolean(m.redeemed), redeemedAt:m.redeemedAt||null }; }) };
+}
+function formatDateOnly(ts){
+  if(!ts) return '';
+  var d=new Date(ts);
+  if(!isNaN(d.getTime()))
+    return String(d.getDate()).padStart(2,'0')+'/'+String(d.getMonth()+1).padStart(2,'0')+'/'+d.getFullYear();
+  var mo={Jan:1,Feb:2,Mar:3,Apr:4,May:5,Jun:6,Jul:7,Aug:8,Sep:9,Oct:10,Nov:11,Dec:12};
+  var p=ts.split(' ');
+  if(p.length>=3) return String(p[0]).padStart(2,'0')+'/'+(mo[p[1]]?String(mo[p[1]]).padStart(2,'0'):'00')+'/'+p[2];
+  return ts;
+}
+function sanitizeFilename(name){ return String(name||'file').trim().replace(/[^a-z0-9-_]+/gi,'-').replace(/^-+|-+$/g,'')||'file'; }
+
+// ─────────────────────────────────────────────────────────────
+// ROLE HELPERS
+// ─────────────────────────────────────────────────────────────
+function roleChipClass(role){ if(role==='manager') return 'r-manager'; if(role==='admin') return 'r-admin'; return 'r-participant'; }
+function roleChipLabel(role){ if(role==='manager') return 'Manager'; if(role==='admin') return 'Admin'; return 'Participant'; }
+function routeForRole(role){ return (role==='admin'||role==='manager') ? 'admin' : 'participant'; }
+
+// ─────────────────────────────────────────────────────────────
+// BOOT / SESSION PERSISTENCE
+// ─────────────────────────────────────────────────────────────
+(function init(){
+  var saved=localStorage.getItem('aiStampSessionV2');
+  if(saved){
+    try{ currentUser=normalizeUser(JSON.parse(saved)); refreshDashboardAndShow(); }
+    catch(e){ localStorage.removeItem('aiStampSessionV2'); }
+  }
+})();
+
+function persistUser(){ localStorage.setItem('aiStampSessionV2', JSON.stringify(currentUser)); }
+
+function showScreen(name){
+  document.querySelectorAll('.screen').forEach(function(s){ s.classList.remove('active'); });
+  document.getElementById('screen-'+name).classList.add('active');
+}
+
+// ─────────────────────────────────────────────────────────────
+// AUTH
+// ─────────────────────────────────────────────────────────────
+function switchAuthTab(tab){
+  document.querySelectorAll('.auth-tab').forEach(function(el,i){ el.classList.toggle('active',['login','signup'][i]===tab); });
+  document.getElementById('form-login').style.display=tab==='login'?'block':'none';
+  document.getElementById('form-signup').style.display=tab==='signup'?'block':'none';
+}
+function showErr(id,msg){ var el=document.getElementById(id); if(!el) return; el.textContent=msg; el.style.display='block'; setTimeout(function(){ el.style.display='none'; },5000); }
+
+async function handleLogin(){
+  busy('btn-login','Signing in…');
+  try{
+    var email=document.getElementById('login-email').value.trim().toLowerCase();
+    var password=document.getElementById('login-password').value;
+    if(!email||!password){ showErr('login-error','Enter your email and password.'); return; }
+    var data=await apiRequest('login',{email,password});
+    finishAuth(data);
+  }catch(e){ showErr('login-error',e.message); }
+  finally{ restore('btn-login'); }
+}
+async function handleSignUp(){
+  busy('btn-signup','Creating…');
+  try{
+    var name=document.getElementById('su-name').value.trim();
+    var facility=document.getElementById('su-facility').value;
+    var email=document.getElementById('su-email').value.trim().toLowerCase();
+    var password=document.getElementById('su-password').value;
+    if(!name){ showErr('signup-error','Please enter your full name.'); return; }
+    if(!facility){ showErr('signup-error','Please select your facility.'); return; }
+    if(!email||!email.includes('@')){ showErr('signup-error','Enter a valid email.'); return; }
+    if(password.length<8){ showErr('signup-error','Password must be at least 8 characters.'); return; }
+    var data=await apiRequest('signup',{name,facility,email,password});
+    finishAuth(data);
+  }catch(e){ showErr('signup-error',e.message); }
+  finally{ restore('btn-signup'); }
+}
+function finishAuth(data){
+  currentUser=normalizeUser(data.user);
+  myTracks=(data.tracks||[]).map(normalizeTrackSummary);
+  persistUser();
+  renderDashboard();
+  showScreen('dashboard');
+}
+function logout(){
+  localStorage.removeItem('aiStampSessionV2');
+  currentUser=null; myTracks=[]; currentTrackId=null; currentTrackRole=null;
+  trackProgress=null; allSessions=[]; adminTrackInfo=null; adminTemplate=null; adminParticipants=[];
+  if(countdownTimer){ clearInterval(countdownTimer); countdownTimer=null; }
+  showScreen('auth');
+}
+async function refreshDashboardAndShow(){
+  try{
+    var data=await apiRequest('getDashboard',{userId:currentUser.id,email:currentUser.email});
+    currentUser=normalizeUser(data.user);
+    myTracks=(data.tracks||[]).map(normalizeTrackSummary);
+    persistUser();
+    renderDashboard();
+    showScreen('dashboard');
+  }catch(e){
+    console.error(e);
+    showScreen('dashboard');
+    renderDashboard();
+  }
+}
+
+// ─────────────────────────────────────────────────────────────
+// DASHBOARD
+// ─────────────────────────────────────────────────────────────
+function goToDashboard(){
+  if(countdownTimer){ clearInterval(countdownTimer); countdownTimer=null; }
+  currentTrackId=null; currentTrackRole=null;
+  refreshDashboardAndShow();
+}
+
+function renderDashboard(){
+  document.getElementById('dash-welcome').textContent='Hello, '+(currentUser.name.split(' ')[0]||'there')+' 👋';
+  document.getElementById('dash-sub').textContent=currentUser.email;
+  document.getElementById('dash-manager-section').style.display=currentUser.isTrackManager?'block':'none';
+
+  var list=document.getElementById('dash-track-list');
+  list.innerHTML='';
+  if(!myTracks.length){
+    list.innerHTML='<div class="empty-state"><i class="ti ti-route-off"></i><p>You haven\'t joined any tracks yet.<br>Enter an access code below to get started.</p></div>';
+    return;
+  }
+  myTracks.forEach(function(t){
+    var card=document.createElement('div');
+    card.className='track-card';
+    card.onclick=function(){ openTrack(t.trackId, t.role); };
+    card.innerHTML=
+      '<div class="track-ic"><i class="ti ti-route"></i></div>'+
+      '<div class="track-card-body">'+
+        '<div class="track-name">'+htmlAttr(t.trackName)+'</div>'+
+        '<div class="track-meta"><span class="role-chip '+roleChipClass(t.role)+'">'+roleChipLabel(t.role)+'</span></div>'+
+      '</div>'+
+      '<i class="ti ti-chevron-right track-chev"></i>';
+    list.appendChild(card);
+  });
+}
+
+async function handleJoinTrack(){
+  var code=document.getElementById('join-code-input').value.trim().toUpperCase();
+  if(!code){ showErr('join-error','Please enter an access code.'); return; }
+  busy('btn-join-track','Joining…');
+  try{
+    var data=await apiRequest('joinTrackByCode',{userId:currentUser.id,email:currentUser.email,accessCode:code});
+    myTracks=(data.tracks||[]).map(normalizeTrackSummary);
+    document.getElementById('join-code-input').value='';
+    renderDashboard();
+    if(data.alreadyEnrolled){
+      // already had access — just route them in
+      openTrack(data.trackId, data.role);
+    } else {
+      openTrack(data.trackId, data.role);
+    }
+  }catch(e){ showErr('join-error',e.message); }
+  finally{ restore('btn-join-track'); }
+}
+
+// Dynamic routing: role on this specific track decides destination screen.
+function openTrack(trackId, role){
+  currentTrackId=Number(trackId);
+  currentTrackRole=String(role||'participant').toLowerCase();
+  if(routeForRole(currentTrackRole)==='admin'){
+    bootAdminView();
+  } else {
+    bootParticipantView();
+  }
+}
+
+// ─────────────────────────────────────────────────────────────
+// CREATE TRACK MODAL (Track Manager)
+// ─────────────────────────────────────────────────────────────
+function openCreateTrackModal(){
+  document.getElementById('ct-name').value='';
+  document.getElementById('ct-code').value='';
+  document.getElementById('ct-total').value='10';
+  document.getElementById('ct-admin-input').value='';
+  pendingAdminEmails=[];
+  renderAdminChips();
+  document.getElementById('create-track-error').style.display='none';
+  document.getElementById('create-track-overlay').classList.add('open');
+}
+function closeCreateTrackModal(){ document.getElementById('create-track-overlay').classList.remove('open'); }
+
+function addAdminChip(){
+  var input=document.getElementById('ct-admin-input');
+  var email=input.value.trim().toLowerCase();
+  if(!email||!email.includes('@')) return;
+  if(pendingAdminEmails.indexOf(email)===-1) pendingAdminEmails.push(email);
+  input.value='';
+  renderAdminChips();
+}
+function removeAdminChip(email){
+  pendingAdminEmails=pendingAdminEmails.filter(function(e){ return e!==email; });
+  renderAdminChips();
+}
+function renderAdminChips(){
+  var wrap=document.getElementById('ct-admin-chips');
+  wrap.innerHTML=pendingAdminEmails.map(function(e){
+    return '<span class="email-chip">'+htmlAttr(e)+'<button onclick="removeAdminChip(\''+htmlAttr(e)+'\')"><i class="ti ti-x" style="font-size:11px;"></i></button></span>';
+  }).join('');
+}
+
+async function submitCreateTrack(){
+  var name=document.getElementById('ct-name').value.trim();
+  var code=document.getElementById('ct-code').value.trim().toUpperCase();
+  var total=Number(document.getElementById('ct-total').value)||10;
+  if(!name){ showErr('create-track-error','Please enter a track name.'); return; }
+  if(total<1||total>50){ showErr('create-track-error','Total stamps must be between 1 and 50.'); return; }
+  busy('btn-do-create-track','Creating…');
+  try{
+    var data=await apiRequest('createTrack',{
+      managerEmail:currentUser.email, trackName:name, accessCode:code,
+      totalStamps:total, adminEmails:pendingAdminEmails
+    });
+    myTracks=(data.tracks||[]).map(normalizeTrackSummary);
+    closeCreateTrackModal();
+    renderDashboard();
+    var msg='Track "'+name+'" created. Access code: '+data.accessCode+'.';
+    if(data.skippedAdminEmails&&data.skippedAdminEmails.length){
+      msg+='\n\nNote: these emails don\'t have accounts yet, so they weren\'t added as admins: '+data.skippedAdminEmails.join(', ')+'. Use "Add Admin" once they\'ve signed up.';
+    }
+    alert(msg);
+    openTrack(data.trackId,'admin');
+  }catch(e){ showErr('create-track-error',e.message); }
+  finally{ restore('btn-do-create-track'); }
+}
+
+// ─────────────────────────────────────────────────────────────
+// PARTICIPANT VIEW
+// ─────────────────────────────────────────────────────────────
+async function bootParticipantView(){
+  sessionPage=0;
+  try{
+    var data=await apiRequest('getParticipantView',{userId:currentUser.id,email:currentUser.email,trackId:currentTrackId});
+    trackProgress=normalizeProgress(data.progress);
+    allSessions=(data.sessions||[]).map(normalizeSession);
+    renderParticipant();
+    showScreen('participant');
+  }catch(e){ alert('Could not open track: '+e.message); }
+}
+
+function renderParticipant(){
+  var p=trackProgress;
+  document.getElementById('p-track-name').textContent=p.trackName;
+  document.getElementById('p-welcome').textContent='Hello, '+(currentUser.name.split(' ')[0]||'there')+' 👋';
+  document.getElementById('p-facility').textContent=currentUser.facility+' · '+currentUser.email;
+  renderStampCard('p-track-lbl','p-fill','p-dots','p-stamps','p-count','p-total','p-reward-cards',p,false);
+  renderSessions();
+  document.getElementById('btn-open-scanner').disabled = p.stamps>=p.totalStamps;
+}
+
+// Shared renderer used by both the real participant view and the read-only demo view.
+function renderStampCard(lblId,fillId,dotsId,stampsId,countId,totalId,rewardsId,progress,readOnlyDemo){
+  var lbl=document.getElementById(lblId);
+  lbl.innerHTML='<span class="tl">Start</span>'+progress.milestones.map(function(m){
+    return '<span class="tl">'+m.position+' pts</span>';
+  }).join('')+(progress.milestones.length && progress.milestones[progress.milestones.length-1].position===progress.totalStamps ? '' : '<span class="tl">'+progress.totalStamps+' pts</span>');
+
+  document.getElementById(fillId).style.width=Math.min(100, (progress.stamps/progress.totalStamps)*100)+'%';
+
+  var dotsWrap=document.getElementById(dotsId);
+  var dotsHtml='<div class="dot r"></div>';
+  progress.milestones.forEach(function(m){
+    dotsHtml+='<div class="dot'+(progress.stamps>=m.position?' reached':'')+'" title="'+htmlAttr(m.name)+'"></div>';
+  });
+  dotsWrap.innerHTML=dotsHtml;
+
+  var grid=document.getElementById(stampsId);
+  grid.innerHTML='';
+  var milestonePositions={};
+  progress.milestones.forEach(function(m){ milestonePositions[m.position]=true; });
+  for(var i=1;i<=progress.totalStamps;i++){
+    var filled = (readOnlyDemo ? i<=Math.min(progress.totalStamps, Math.ceil(progress.totalStamps*0.6)) : i<=progress.stamps);
+    var div=document.createElement('div');
+    var isMilestone=milestonePositions[i];
+    div.className='stamp '+(filled?'col':'unc')+(isMilestone?' milestone':'');
+    div.innerHTML='<span class="snum">'+i+'</span>'+(filled?'<svg class="stamp-cat-svg" viewBox="0 0 100 100"><path d="M14 18 Q14 13 19 12 L39 19 Q45 21 50 21 Q55 21 61 19 L81 12 Q86 13 86 18 L83 48 Q87 56 85 63 L83 68 L92 68 Q94 68 94 70 L94 71 Q94 73 92 73 L82 73 L80 76 L92 80 Q94 81 93 83 L92 85 Q91 87 88 86 L77 82 Q67 96 50 96 Q33 96 23 82 L12 86 Q9 87 8 85 L7 83 Q6 81 8 80 L20 76 L18 73 L8 73 Q6 73 6 71 L6 70 Q6 68 8 68 L17 68 L15 63 Q13 56 17 48 Z" fill="currentColor"/></svg>':'');
+    grid.appendChild(div);
+  }
+  document.getElementById(countId).textContent = readOnlyDemo ? Math.min(progress.totalStamps, Math.ceil(progress.totalStamps*0.6)) : progress.stamps;
+  document.getElementById(totalId).textContent=progress.totalStamps;
+
+  var rewardsWrap=document.getElementById(rewardsId);
+  rewardsWrap.className='qr-cards '+(progress.milestones.length===1?'cols-1':progress.milestones.length>=3?'cols-3':'');
+  rewardsWrap.innerHTML='';
+  if(!progress.milestones.length){
+    rewardsWrap.innerHTML='<p style="font-size:12px;color:var(--ts);grid-column:1/-1;text-align:center;">No rewards configured for this track yet.</p>';
+    return;
+  }
+  progress.milestones.forEach(function(m, idx){
+    var simEligible = readOnlyDemo ? false : m.eligible;
+    var simRedeemed = readOnlyDemo ? false : m.redeemed;
+    var card=document.createElement('div');
+    card.className='qr-card '+(simRedeemed?'redeemed-qr':(simEligible?'active-qr':'locked'));
+    var svgId=lblId+'-qr-'+idx;
+    var sub;
+    if(simRedeemed){ sub='<span class="redeemed-tag"><i class="ti ti-check" style="font-size:10px;"></i> Redeemed</span>'; }
+    else if(simEligible){ sub='Show to facilitator'; }
+    else { sub=m.position+' stamps needed'; }
+    card.innerHTML=
+      '<div class="qr-box"><svg width="60" height="60" viewBox="0 0 60 60" id="'+svgId+'"></svg></div>'+
+      '<div class="qr-lbl"><i class="ti '+htmlAttr(m.icon)+'" style="font-size:11px;margin-right:3px;"></i>'+htmlAttr(m.name)+'</div>'+
+      '<div class="qr-sub">'+sub+'</div>';
+    rewardsWrap.appendChild(card);
+    if(simEligible && !simRedeemed){
+      setTimeout(function(){ drawSVGQR(svgId, idx*4+3); },0);
+    }
+  });
+}
+
+function drawSVGQR(svgId,seed){
+  var svg=document.getElementById(svgId); if(!svg) return; svg.innerHTML='';
+  var G=7,CS=8,PAD=2,pat=[];
+  for(var r=0;r<G;r++){pat.push([]);for(var c=0;c<G;c++)pat[r].push(((seed*31+r*17+c*7+r*c*seed)%3)===0?1:0);}
+  [[0,0],[4,0],[0,4]].forEach(function(p){for(var rr=0;rr<3;rr++)for(var cc=0;cc<3;cc++)pat[p[0]+rr][p[1]+cc]=(rr===1&&cc===1)?0:1;});
+  for(var r2=0;r2<G;r2++)for(var c2=0;c2<G;c2++){
+    if(!pat[r2][c2]) continue;
+    var rect=document.createElementNS('http://www.w3.org/2000/svg','rect');
+    rect.setAttribute('x',String(PAD+c2*CS)); rect.setAttribute('y',String(PAD+r2*CS));
+    rect.setAttribute('width',String(CS-1)); rect.setAttribute('height',String(CS-1));
+    rect.setAttribute('fill','#2C1F14'); svg.appendChild(rect);
+  }
+}
+
+function renderSessions(){
+  var grid=document.getElementById('p-sessions');
+  grid.innerHTML='';
+  var total=allSessions.length;
+  var totalPages=Math.max(1,Math.ceil(total/SESSION_PAGE_SIZE));
+  if(sessionPage>=totalPages) sessionPage=0;
+  if(sessionPage<0) sessionPage=totalPages-1;
+  var start=sessionPage*SESSION_PAGE_SIZE;
+  var visible=allSessions.slice(start,start+SESSION_PAGE_SIZE);
+  visible.forEach(function(s){
+    var claimed=trackProgress.claimedSessions.indexOf(s.id)!==-1;
+    var status=claimed?'col':(s.qrActive?'avl':'upc');
+    var lbl=claimed?'Collected':(s.qrActive?'QR Active':'Upcoming');
+    var icon=claimed?'ti-check':(s.qrActive?'ti-qrcode-scan':'ti-clock');
+    var rawTs=trackProgress.scanTimestamps&&trackProgress.scanTimestamps[s.id]?trackProgress.scanTimestamps[s.id]:'';
+    var dateOnly=rawTs?formatDateOnly(rawTs):'';
+    var tsHtml=dateOnly?'<div class="scan-ts"><i class="ti ti-calendar"></i>Stamped: '+dateOnly+'</div>':'';
+    var metaParts=[];
+    if(s.time)     metaParts.push('<span class="sess-meta-pill"><i class="ti ti-clock"></i>'+s.time+'</span>');
+    if(s.location) metaParts.push('<span class="sess-meta-pill"><i class="ti ti-map-pin"></i>'+s.location+'</span>');
+    var metaHtml=metaParts.length?'<div class="sess-meta">'+metaParts.join('')+'</div>':'';
+    var card=document.createElement('div');
+    card.className='sess-card';
+    card.innerHTML=
+      '<div class="sess-ic '+status+'"><i class="ti '+s.icon+'" style="font-size:17px;"></i></div>'+
+      '<div style="flex:1;min-width:0;">'+
+        '<div class="stop"><span class="sname">'+htmlAttr(s.name)+'</span><span class="pb">1 pt</span></div>'+
+        '<div class="stype">'+htmlAttr(s.type)+'</div>'+
+        '<div class="sdesc">'+htmlAttr(s.desc)+'</div>'+
+        metaHtml+
+        '<span class="spill '+status+'" style="margin-top:6px;"><i class="ti '+icon+'" style="font-size:10px;"></i> '+lbl+'</span>'+
+        tsHtml+
+      '</div>';
+    grid.appendChild(card);
+  });
+  var pager=document.getElementById('sess-pager');
+  var prevBtn=document.getElementById('btn-prev-sess');
+  var nextBtn=document.getElementById('btn-next-sess');
+  var info=document.getElementById('sess-pager-info');
+  if(total>SESSION_PAGE_SIZE){
+    pager.style.display='flex';
+    prevBtn.disabled=(sessionPage===0);
+    nextBtn.disabled=(sessionPage>=totalPages-1);
+    info.textContent=(start+1)+'–'+Math.min(total,start+SESSION_PAGE_SIZE)+' of '+total;
+  } else {
+    pager.style.display='none';
+  }
+}
+
+function changeSessionPage(dir){
+  var total=allSessions.length;
+  var totalPages=Math.max(1,Math.ceil(total/SESSION_PAGE_SIZE));
+  sessionPage=Math.max(0,Math.min(totalPages-1,sessionPage+dir));
+  renderSessions();
+}
+
+// ── QR Scanner ──
+function openScanner(){
+  document.getElementById('scanner-overlay').classList.add('open');
+  document.getElementById('scan-result-card').style.display='none';
+  document.getElementById('scanner-live-area').style.display='block';
+  document.getElementById('scanner-status').textContent='Initialising camera…';
+  document.getElementById('scanner-status').className='scanner-status';
+  scanDone=false; startCamera();
+}
+function closeScanner(){ document.getElementById('scanner-overlay').classList.remove('open'); stopCamera(); }
+function startCamera(){
+  navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'}})
+    .then(function(stream){
+      scanStream=stream;
+      var v=document.getElementById('scanner-video'); v.srcObject=stream; v.play();
+      document.getElementById('scanner-status').textContent='Align QR code inside the frame';
+      requestAnimationFrame(scanFrame);
+    })
+    .catch(function(err){ document.getElementById('scanner-status').textContent='Camera error: '+err.message; document.getElementById('scanner-status').className='scanner-status error'; });
+}
+function stopCamera(){
+  if(scanAnimFrame){ cancelAnimationFrame(scanAnimFrame); scanAnimFrame=null; }
+  if(scanStream){ scanStream.getTracks().forEach(function(t){ t.stop(); }); scanStream=null; }
+  var v=document.getElementById('scanner-video'); if(v) v.srcObject=null;
+}
+function scanFrame(){
+  if(scanDone) return;
+  var v=document.getElementById('scanner-video'), c=document.getElementById('scanner-canvas');
+  if(!v||!c) return;
+  if(v.readyState!==v.HAVE_ENOUGH_DATA){ scanAnimFrame=requestAnimationFrame(scanFrame); return; }
+  c.width=v.videoWidth; c.height=v.videoHeight;
+  var ctx=c.getContext('2d'); ctx.drawImage(v,0,0,c.width,c.height);
+  var img=ctx.getImageData(0,0,c.width,c.height);
+  var code=jsQR(img.data,img.width,img.height,{inversionAttempts:'dontInvert'});
+  if(code&&code.data){ scanDone=true; stopCamera(); submitQRToken(code.data); }
+  else { scanAnimFrame=requestAnimationFrame(scanFrame); }
+}
+async function submitQRToken(token){
+  document.getElementById('scanner-status').textContent='Verifying…';
+  try{
+    var data=await apiRequest('scanQR',{userId:currentUser.id,email:currentUser.email,qrToken:token});
+    trackProgress=normalizeProgress(data.progress);
+    if(data.sessions) allSessions=data.sessions.map(normalizeSession);
+    document.getElementById('scanner-live-area').style.display='none';
+    var rc=document.getElementById('scan-result-card');
+    rc.className='scan-result-card'; rc.style.display='block';
+    document.getElementById('scan-result-icon').textContent='✅';
+    document.getElementById('scan-result-title').textContent='Stamp collected!';
+    document.getElementById('scan-result-body').textContent=data.sessionName+'\nStamped on: '+formatDateOnly(data.scannedAt||'');
+    renderParticipant();
+    setTimeout(function(){ closeScanner(); },3000);
+  }catch(e){
+    document.getElementById('scanner-live-area').style.display='none';
+    var rc=document.getElementById('scan-result-card');
+    rc.className='scan-result-card error-card'; rc.style.display='block';
+    document.getElementById('scan-result-icon').textContent='❌';
+    document.getElementById('scan-result-title').textContent='Could not claim stamp';
+    document.getElementById('scan-result-body').textContent=e.message;
+    setTimeout(function(){ rc.style.display='none'; document.getElementById('scanner-live-area').style.display='block'; scanDone=false; startCamera(); },3000);
+  }
+}
+
+// ─────────────────────────────────────────────────────────────
+// ADMIN VIEW
+// ─────────────────────────────────────────────────────────────
+async function bootAdminView(){
+  try{
+    var data=await apiRequest('getAdminView',{adminEmail:currentUser.email,trackId:currentTrackId});
+    adminTrackInfo=data.track;
+    adminTemplate=data.template;
+    adminParticipants=(data.participants||[]).map(normalizeAdminParticipant);
+    allSessions=(data.sessions||[]).map(normalizeSession);
+    renderAdmin();
+    showScreen('admin');
+  }catch(e){ alert('Could not open admin panel: '+e.message); }
+}
+
+async function refreshAdminData(){
+  try{
+    var data=await apiRequest('getAdminView',{adminEmail:currentUser.email,trackId:currentTrackId});
+    adminTrackInfo=data.track;
+    adminTemplate=data.template;
+    adminParticipants=(data.participants||[]).map(normalizeAdminParticipant);
+    allSessions=(data.sessions||[]).map(normalizeSession);
+    renderAdmin();
+  }catch(e){ console.error(e); }
+}
+
+function renderAdmin(){
+  document.getElementById('a-logged-as').textContent=currentUser.name+' · '+currentUser.email;
+  document.getElementById('a-track-name').textContent=adminTrackInfo.trackName;
+  document.getElementById('a-access-code').textContent=adminTrackInfo.accessCode;
+  renderAdminStats();
+  renderTemplateEditor();
+  populateQRSessionSelect();
+  populateDataSessionSelect();
+  renderQRPanel();
+  renderAdminParticipants();
+}
+
+function renderAdminStats(){
+  var parts=adminParticipants;
+  var totalMilestones=adminTemplate.milestones.length;
+  var eligible=parts.filter(function(p){ return p.milestones.some(function(m){ return m.eligible&&!m.redeemed; }); });
+  var redeemedAny=parts.filter(function(p){ return p.milestones.some(function(m){ return m.redeemed; }); });
+  var notYet=parts.filter(function(p){ return !totalMilestones || p.stamps < (adminTemplate.milestones[0]?adminTemplate.milestones[0].position:1); });
+  var grid=document.getElementById('a-stat-grid');
+  grid.innerHTML=
+    '<div class="stat-card"><div class="stat-num">'+parts.length+'</div><div class="stat-lbl">Total participants</div></div>'+
+    '<div class="stat-card"><div class="stat-num green">'+redeemedAny.length+'</div><div class="stat-lbl">Rewards redeemed</div></div>'+
+    '<div class="stat-card"><div class="stat-num" style="color:var(--blue);">'+eligible.length+'</div><div class="stat-lbl">Eligible, not redeemed</div></div>'+
+    '<div class="stat-card"><div class="stat-num" style="color:var(--gray);">'+notYet.length+'</div><div class="stat-lbl">Not yet eligible</div></div>';
+}
+
+// ── Reward template editor ──
+var editingMilestones = [];
+function renderTemplateEditor(){
+  editingMilestones = adminTemplate.milestones.map(function(m){ return Object.assign({},m); });
+  var wrap=document.getElementById('template-editor');
+  wrap.innerHTML=
+    '<div class="template-total-row"><label>Total stamps</label><input type="number" min="1" max="50" id="tpl-total" value="'+adminTemplate.totalStamps+'"></div>'+
+    '<div id="tpl-milestone-list"></div>'+
+    '<button class="btn-add-milestone" onclick="addMilestoneRow()"><i class="ti ti-plus"></i> Add Milestone</button>'+
+    '<button class="btn-save-template" id="btn-save-template" onclick="saveTemplate()"><i class="ti ti-check"></i> Save Reward Template</button>';
+  renderMilestoneRows();
+}
+function renderMilestoneRows(){
+  var list=document.getElementById('tpl-milestone-list');
+  list.innerHTML=editingMilestones.map(function(m,idx){
+    var iconOpts=MILESTONE_ICON_OPTIONS.map(function(ic){ return '<option value="'+ic+'"'+(ic===m.icon?' selected':'')+'>'+ic.replace('ti-','')+'</option>'; }).join('');
+    return '<div class="milestone-row">'+
+      '<div class="milestone-row-fields">'+
+        '<div class="milestone-row-line1">'+
+          '<input class="milestone-input" type="number" min="1" max="50" value="'+m.position+'" onchange="updateMilestoneField('+idx+',\'position\',this.value)" placeholder="Pos">'+
+          '<input class="milestone-input" type="text" value="'+htmlAttr(m.name)+'" onchange="updateMilestoneField('+idx+',\'name\',this.value)" placeholder="Reward name">'+
+        '</div>'+
+        '<select class="milestone-icon-select" onchange="updateMilestoneField('+idx+',\'icon\',this.value)">'+iconOpts+'</select>'+
+      '</div>'+
+      '<button class="btn-remove-milestone" onclick="removeMilestoneRow('+idx+')"><i class="ti ti-trash"></i></button>'+
+    '</div>';
+  }).join('') || '<p style="font-size:12px;color:var(--ts);text-align:center;padding:10px 0;">No milestones yet — add one below.</p>';
+}
+function updateMilestoneField(idx,field,value){
+  if(!editingMilestones[idx]) return;
+  editingMilestones[idx][field] = field==='position' ? Number(value) : value;
+}
+function addMilestoneRow(){
+  var total=Number(document.getElementById('tpl-total').value)||adminTemplate.totalStamps;
+  editingMilestones.push({ position: total, name: 'New Reward', icon: 'ti-gift' });
+  renderMilestoneRows();
+}
+function removeMilestoneRow(idx){
+  editingMilestones.splice(idx,1);
+  renderMilestoneRows();
+}
+async function saveTemplate(){
+  var total=Number(document.getElementById('tpl-total').value)||10;
+  if(!editingMilestones.length){ alert('Add at least one milestone before saving.'); return; }
+  for(var i=0;i<editingMilestones.length;i++){
+    var m=editingMilestones[i];
+    if(!m.name||!m.name.trim()){ alert('Every milestone needs a name.'); return; }
+    if(!m.position||m.position<1||m.position>total){ alert('Milestone "'+m.name+'" position must be between 1 and '+total+'.'); return; }
+  }
+  busy('btn-save-template','Saving…');
+  try{
+    var data=await apiRequest('updateTemplate',{adminEmail:currentUser.email,trackId:currentTrackId,totalStamps:total,milestones:editingMilestones});
+    adminTemplate=data.template;
+    adminParticipants=(data.participants||[]).map(normalizeAdminParticipant);
+    renderAdmin();
+  }catch(e){ alert('Error: '+e.message); }
+  finally{ restore('btn-save-template'); }
+}
+
+// ── Session select dropdowns ──
+function populateQRSessionSelect(){
+  var sel=document.getElementById('qr-session-select');
+  var current=sel.value;
+  sel.innerHTML='<option value="">— Select a session —</option>';
+  allSessions.forEach(function(s){
+    var opt=document.createElement('option');
+    opt.value=s.id; opt.textContent=s.name+(s.location?' · '+s.location:'');
+    sel.appendChild(opt);
+  });
+  if(current) sel.value=current;
+}
+function populateDataSessionSelect(){
+  var sel=document.getElementById('data-session-select'); if(!sel) return;
+  var current=sel.value||'all';
+  sel.innerHTML='<option value="all">All sessions</option>';
+  allSessions.forEach(function(s){
+    var opt=document.createElement('option');
+    opt.value=s.id; opt.textContent=s.name+(s.location?' · '+s.location:'');
+    sel.appendChild(opt);
+  });
+  sel.value=Array.prototype.some.call(sel.options,function(o){ return o.value===current; })?current:'all';
+}
+
+function renderQRPanel(){
+  if(countdownTimer){ clearInterval(countdownTimer); countdownTimer=null; }
+  var sid=Number(document.getElementById('qr-session-select').value);
+  var content=document.getElementById('qr-panel-content');
+  if(!sid){ content.style.display='none'; document.getElementById('selected-session-card').innerHTML=''; return; }
+  var s=allSessions.find(function(x){ return x.id===sid; });
+  if(!s){ content.style.display='none'; document.getElementById('selected-session-card').innerHTML=''; return; }
+  content.style.display='block';
+
+  var isActive=s.qrActive&&s.qrExpiresAt>Date.now();
+  var claimCount=adminParticipants.filter(function(u){ return u.claimedSessions.indexOf(sid)!==-1; }).length;
+
+  var pill=document.getElementById('qr-panel-status');
+  pill.textContent=isActive?'Active':'Inactive';
+  pill.className='qr-status-pill '+(isActive?'active':'inactive');
+  document.getElementById('qr-panel-count').innerHTML='<i class="ti ti-users" style="font-size:10px;"></i> '+claimCount+' scanned';
+
+  var mini=document.getElementById('selected-session-mini');
+  mini.innerHTML='<strong>'+htmlAttr(s.name)+'</strong>'+(s.type?' &nbsp;·&nbsp; '+htmlAttr(s.type):'')+(s.time?' &nbsp;·&nbsp; '+htmlAttr(s.time):'')+(s.location?' &nbsp;·&nbsp; '+htmlAttr(s.location):'');
+
+  document.getElementById('btn-panel-activate').innerHTML='<i class="ti ti-qrcode"></i> '+(isActive?'Refresh QR':'Activate QR');
+
+  var box=document.getElementById('qr-panel-box');
+  box.innerHTML='';
+  if(isActive&&s.qrToken){
+    try{ new QRCode(box,{text:s.qrToken,width:148,height:148,colorDark:'#2C1F14',colorLight:'#ffffff',correctLevel:QRCode.CorrectLevel.L}); }catch(e){}
+    document.getElementById('btn-dl-qr').style.display='flex';
+  } else {
+    box.style.fontSize='11px'; box.style.color='var(--ts)'; box.style.textAlign='center'; box.style.padding='8px';
+    box.textContent='No QR active';
+    document.getElementById('btn-dl-qr').style.display='none';
+  }
+
+  var cdEl=document.getElementById('qr-panel-countdown');
+  if(isActive){
+    cdEl.style.display='flex';
+    function tick(){
+      var rem=Math.max(0,Math.floor((s.qrExpiresAt-Date.now())/1000));
+      var m=Math.floor(rem/60), sec=rem%60;
+      var sp=cdEl.querySelector('span');
+      if(sp) sp.textContent='Expires in '+m+':'+(sec<10?'0':'')+sec;
+      cdEl.className='countdown'+(rem<60?' expired':'');
+      if(rem===0){ clearInterval(countdownTimer); countdownTimer=null; setTimeout(refreshAdminData,1000); }
+    }
+    cdEl.innerHTML='<i class="ti ti-clock"></i> <span></span>';
+    tick();
+    countdownTimer=setInterval(tick,1000);
+  } else {
+    cdEl.style.display='none';
+  }
+}
+
+async function activatePanelQR(){
+  var sid=Number(document.getElementById('qr-session-select').value);
+  if(!sid){ alert('Please select a session first.'); return; }
+  var dur=Number(document.getElementById('qr-panel-dur').value||15);
+  busy('btn-panel-activate','Generating…');
+  try{
+    var data=await apiRequest('generateQRToken',{adminEmail:currentUser.email,trackId:currentTrackId,sessionId:sid,durationMinutes:dur});
+    var idx=allSessions.findIndex(function(s){ return s.id===sid; });
+    if(idx!==-1){ allSessions[idx].qrActive=true; allSessions[idx].qrExpiresAt=data.expiresAtMs; allSessions[idx].qrToken=data.token; }
+    renderQRPanel();
+  }catch(e){ alert('Error: '+e.message); }
+  finally{ restore('btn-panel-activate'); }
+}
+
+function downloadPanelQR(){
+  var sid=Number(document.getElementById('qr-session-select').value);
+  var s=allSessions.find(function(x){ return x.id===sid; });
+  if(!s||!s.qrToken){ alert('No active QR for this session.'); return; }
+  var temp=document.createElement('div'); temp.style.cssText='position:fixed;left:-99999px;top:0;';
+  document.body.appendChild(temp);
+  try{
+    new QRCode(temp,{text:s.qrToken,width:1200,height:1200,colorDark:'#2C1F14',colorLight:'#ffffff',correctLevel:QRCode.CorrectLevel.L});
+    setTimeout(function(){
+      try{
+        var canvas=temp.querySelector('canvas'), img2=temp.querySelector('img');
+        var href=canvas?canvas.toDataURL('image/png'):(img2?img2.src:'');
+        if(!href) throw new Error('Could not generate PNG.');
+        var link=document.createElement('a'); link.href=href; link.download=sanitizeFilename(s.name)+'-qr.png';
+        document.body.appendChild(link); link.click(); document.body.removeChild(link);
+      }catch(err){ alert('Download failed: '+err.message); }
+      finally{ if(temp.parentNode) temp.parentNode.removeChild(temp); }
+    },50);
+  }catch(err){ if(temp.parentNode) temp.parentNode.removeChild(temp); alert('Download failed: '+err.message); }
+}
+
+function openSelectedEdit(){
+  var sid=Number(document.getElementById('qr-session-select').value);
+  if(!sid){ alert('Please select a session first.'); return; }
+  var s=allSessions.find(function(x){ return x.id===sid; });
+  if(!s) return;
+  var slot=document.getElementById('selected-session-card');
+  var typeOpts=['Sharing','Workshop','Sharing & Workshop'].map(function(t){
+    return '<option value="'+htmlAttr(t)+'"'+(t===s.type?' selected':'')+'>'+t+'</option>';
+  }).join('');
+  var locOpts=LOCATION_OPTIONS.map(function(loc){
+    return '<option value="'+htmlAttr(loc)+'"'+(loc===s.location?' selected':'')+'>'+loc+'</option>';
+  }).join('');
+  slot.innerHTML=
+    '<div class="sess-edit-form open" id="edit-form-'+s.id+'">'+
+      '<div><label class="form-label" style="font-size:10px;">Session Name</label>'+
+      '<input class="edit-form-input" id="ef-name-'+s.id+'" value="'+htmlAttr(s.name)+'" placeholder="Session name"></div>'+
+      '<div class="edit-form-row">'+
+        '<div><label class="form-label" style="font-size:10px;">Type</label>'+
+        '<select class="edit-form-select" id="ef-type-'+s.id+'">'+typeOpts+'</select></div>'+
+        '<div><label class="form-label" style="font-size:10px;">Time</label>'+
+        '<input class="edit-form-input" id="ef-time-'+s.id+'" value="'+htmlAttr(s.time)+'" placeholder="09:00–10:00"></div>'+
+      '</div>'+
+      '<div><label class="form-label" style="font-size:10px;">Location</label>'+
+      '<select class="edit-form-select" id="ef-loc-'+s.id+'">'+locOpts+'</select></div>'+
+      '<div><label class="form-label" style="font-size:10px;">Description</label>'+
+      '<input class="edit-form-input" id="ef-desc-'+s.id+'" value="'+htmlAttr(s.desc)+'" placeholder="Description"></div>'+
+      '<div class="edit-form-actions">'+
+        '<button class="btn-save" id="btn-save-'+s.id+'" onclick="saveSession('+s.id+')"><i class="ti ti-check"></i> Save Changes</button>'+
+        '<button class="btn-cancel-edit" onclick="document.getElementById(\'selected-session-card\').innerHTML=\'\'">Cancel</button>'+
+      '</div>'+
+    '</div>';
+}
+
+async function deleteSelectedSession(){
+  var sid=Number(document.getElementById('qr-session-select').value);
+  if(!sid){ alert('Please select a session first.'); return; }
+  var s=allSessions.find(function(x){ return x.id===sid; });
+  if(!s) return;
+  await deleteSession(sid,s.name);
+}
+
+function toggleNewSessionForm(open){
+  document.getElementById('new-session-form').classList.toggle('open',open);
+  document.getElementById('btn-show-new-form').style.display=open?'none':'flex';
+  if(!open){
+    ['new-sess-name','new-sess-desc','new-sess-time'].forEach(function(id){ document.getElementById(id).value=''; });
+    document.getElementById('new-sess-loc').value='Building1';
+  }
+}
+
+async function createSession(){
+  busy('btn-create-session','Creating…');
+  try{
+    var name=document.getElementById('new-sess-name').value.trim();
+    var type=document.getElementById('new-sess-type').value;
+    var time=document.getElementById('new-sess-time').value.trim();
+    var location=document.getElementById('new-sess-loc').value.trim();
+    var desc=document.getElementById('new-sess-desc').value.trim();
+    if(!name){ alert('Please enter a session name.'); return; }
+    if(LOCATION_OPTIONS.indexOf(location)===-1){ alert('Please select a valid location.'); return; }
+    var existingIds={};
+    allSessions.forEach(function(s){ existingIds[s.id]=true; });
+    var data=await apiRequest('createSession',{adminEmail:currentUser.email,trackId:currentTrackId,sessionName:name,sessionType:type,time:time,location:location,description:desc});
+    adminParticipants=(data.participants||[]).map(normalizeAdminParticipant);
+    allSessions=(data.sessions||[]).map(normalizeSession);
+    var created=allSessions.find(function(s){ return !existingIds[s.id]; })||allSessions[allSessions.length-1];
+    toggleNewSessionForm(false);
+    renderAdmin();
+    if(created){ document.getElementById('qr-session-select').value=created.id; renderQRPanel(); }
+  }catch(e){ alert('Error: '+e.message); }
+  finally{ restore('btn-create-session'); }
+}
+
+async function saveSession(sid){
+  var btnId='btn-save-'+sid; busy(btnId,'Saving…');
+  try{
+    var name=document.getElementById('ef-name-'+sid).value.trim();
+    var type=document.getElementById('ef-type-'+sid).value;
+    var time=document.getElementById('ef-time-'+sid).value.trim();
+    var location=document.getElementById('ef-loc-'+sid).value.trim();
+    var desc=document.getElementById('ef-desc-'+sid).value.trim();
+    if(!name){ alert('Session name is required.'); return; }
+    if(LOCATION_OPTIONS.indexOf(location)===-1){ alert('Please select a valid location.'); return; }
+    var data=await apiRequest('updateSession',{adminEmail:currentUser.email,trackId:currentTrackId,sessionId:sid,sessionName:name,sessionType:type,time:time,location:location,description:desc});
+    adminParticipants=(data.participants||[]).map(normalizeAdminParticipant);
+    allSessions=(data.sessions||[]).map(normalizeSession);
+    document.getElementById('selected-session-card').innerHTML='';
+    renderAdmin();
+    document.getElementById('qr-session-select').value=sid; renderQRPanel();
+  }catch(e){ alert('Error: '+e.message); }
+  finally{ restore(btnId); }
+}
+
+async function deleteSession(sid,name){
+  if(!confirm('Delete "'+name+'"?\n\nThis will hide the session. Existing stamps are preserved.')) return;
+  try{
+    var data=await apiRequest('deleteSession',{adminEmail:currentUser.email,trackId:currentTrackId,sessionId:sid});
+    adminParticipants=(data.participants||[]).map(normalizeAdminParticipant);
+    allSessions=(data.sessions||[]).map(normalizeSession);
+    renderAdmin();
+  }catch(e){ alert('Error: '+e.message); }
+}
+
+// ── Admin participants list ──
+function renderAdminParticipants(){
+  var query=(document.getElementById('a-search').value||'').toLowerCase();
+  var parts=adminParticipants;
+  var filtered=parts;
+  if(query) filtered=filtered.filter(function(p){ return p.name.toLowerCase().indexOf(query)!==-1||p.email.toLowerCase().indexOf(query)!==-1; });
+
+  var tbl=document.getElementById('a-table'); tbl.innerHTML='';
+  if(!filtered.length){ tbl.innerHTML='<div class="no-results"><i class="ti ti-search-off"></i>No participants found.</div>'; return; }
+  filtered.forEach(function(p){
+    var name=p.name, init=name.split(' ').filter(Boolean).map(function(w){return w[0];}).join('').toUpperCase().slice(0,2)||'U';
+    var card=document.createElement('div'); card.className='a-card';
+    var historyRows='';
+    if(p.claimedSessions.length>0){
+      historyRows='<details class="stamp-history"><summary class="stamp-history-title"><span>Scan history</span><span class="history-count">'+p.claimedSessions.length+' scans</span></summary><div class="stamp-history-rows">';
+      p.claimedSessions.forEach(function(sid){
+        var sess=allSessions.find(function(s){ return s.id===sid; });
+        var sname=sess?sess.name:'Session '+sid;
+        var ts=(p.scanTimestamps&&p.scanTimestamps[sid])?p.scanTimestamps[sid]:'—';
+        historyRows+='<div class="shrow"><span class="shrow-name">'+htmlAttr(sname)+'</span><span class="shrow-ts"><i class="ti ti-clock-hour-4"></i>'+htmlAttr(ts)+'</span></div>';
+      });
+      historyRows+='</div></details>';
+    }
+    var rewardRows=p.milestones.map(function(m){ return rewardBlock(p,m); }).join('');
+    card.innerHTML=
+      '<div class="a-card-top"><div class="avatar">'+init+'</div>'+
+      '<div><div class="a-pname">'+htmlAttr(name)+'</div><div class="a-pmeta">'+htmlAttr(p.facility)+' · '+htmlAttr(p.email)+'</div></div></div>'+
+      '<div class="a-stamp-bar"><div class="a-stamp-label"><span class="a-stamp-lbl">Stamps collected</span><span class="a-stamp-val">'+p.stamps+' / '+adminTemplate.totalStamps+'</span></div>'+
+      '<div class="mini-bar"><div class="mini-fill" style="width:'+Math.min(100,(p.stamps/adminTemplate.totalStamps)*100)+'%;"></div></div></div>'+
+      historyRows+
+      (rewardRows ? '<div class="reward-rows">'+rewardRows+'</div>' : '');
+    tbl.appendChild(card);
+  });
+}
+
+function rewardBlock(p,m){
+  var right=m.redeemed
+    ?'<div style="text-align:right;"><span class="rbadge done"><i class="ti ti-check" style="font-size:10px;"></i> Redeemed</span>'+(m.redeemedAt?'<div class="redeemed-date">'+htmlAttr(m.redeemedAt)+'</div>':'')+'</div>'
+    :(m.eligible?'<button class="btn-mark" onclick="markRedeemed(\''+p.id+'\','+m.index+')">Mark redeemed</button>':'<span class="rbadge locked">Locked</span>');
+  return '<div class="rrow"><div class="rleft"><div class="ricon"><i class="ti '+htmlAttr(m.icon)+'" style="font-size:13px;"></i></div><div><div class="rname">'+htmlAttr(m.name)+'</div><div class="rsub">Eligible at '+m.position+' stamps</div></div></div>'+right+'</div>';
+}
+
+async function markRedeemed(userId,milestoneIndex){
+  try{
+    var data=await apiRequest('markRedeemed',{adminEmail:currentUser.email,trackId:currentTrackId,userId,milestoneIndex});
+    adminParticipants=(data.participants||[]).map(normalizeAdminParticipant);
+    allSessions=(data.sessions||[]).map(normalizeSession);
+    renderAdmin();
+  }catch(e){ alert(e.message); }
+}
+
+// ── CSV export ──
+function csvEscape(v){ var s=String(v==null?'':v); return (s.indexOf('"')!==-1||s.indexOf(',')!==-1||s.indexOf('\n')!==-1)?'"'+s.replace(/"/g,'""')+'"':s; }
+function downloadCsv(filename,rows){
+  var csv=rows.map(function(r){ return r.map(csvEscape).join(','); }).join('\n');
+  var blob=new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8;'});
+  var url=URL.createObjectURL(blob), link=document.createElement('a');
+  link.href=url; link.download=filename;
+  document.body.appendChild(link); link.click(); document.body.removeChild(link); URL.revokeObjectURL(url);
+}
+function downloadSelectedScanHistory(){
+  var sel=document.getElementById('data-session-select');
+  var value=sel?sel.value:'all';
+  if(value==='all') downloadAllSessionScanHistory();
+  else downloadSessionScanHistory(Number(value));
+}
+function downloadSessionScanHistory(sessionId){
+  var session=allSessions.find(function(s){ return Number(s.id)===Number(sessionId); });
+  if(!session){ alert('Session not found.'); return; }
+  var rows=[['Session ID','Session Name','Participant Name','Facility','Email','Scanned At']];
+  var scanned=adminParticipants.filter(function(u){ return u.scanTimestamps&&u.scanTimestamps[sessionId]; })
+    .sort(function(a,b){ return String(a.scanTimestamps[sessionId]||'').localeCompare(String(b.scanTimestamps[sessionId]||'')); });
+  scanned.forEach(function(u){ rows.push([session.id,session.name,u.name,u.facility,u.email,u.scanTimestamps[sessionId]||'']); });
+  if(!scanned.length) rows.push([session.id,session.name,'','','','No scans yet']);
+  downloadCsv(sanitizeFilename(session.name)+'-scan-history.csv',rows);
+}
+function downloadAllSessionScanHistory(){
+  var rows=[['Session ID','Session Name','Participant Name','Facility','Email','Scanned At']];
+  allSessions.forEach(function(session){
+    var found=false;
+    adminParticipants.forEach(function(u){
+      if(u.scanTimestamps&&u.scanTimestamps[session.id]){ found=true; rows.push([session.id,session.name,u.name,u.facility,u.email,u.scanTimestamps[session.id]||'']); }
+    });
+    if(!found) rows.push([session.id,session.name,'','','','No scans yet']);
+  });
+  downloadCsv('all-session-scan-history.csv',rows);
+}
+
+// ─────────────────────────────────────────────────────────────
+// DEMO VIEW — "Preview as Participant" (strictly read-only)
+// ─────────────────────────────────────────────────────────────
+function openDemoView(){
+  document.getElementById('demo-track-name').textContent=adminTrackInfo.trackName;
+  // Build a synthetic, read-only progress object purely for layout preview.
+  // Numbers here are illustrative only — the demo never reflects real participant data,
+  // and the readOnlyDemo flag in renderStampCard forces every reward to render as locked.
+  var demoProgress={
+    trackId: currentTrackId, trackName: adminTrackInfo.trackName,
+    totalStamps: adminTemplate.totalStamps,
+    stamps: Math.ceil(adminTemplate.totalStamps*0.6),
+    claimedSessions: allSessions.slice(0, Math.ceil(allSessions.length*0.5)).map(function(s){return s.id;}),
+    scanTimestamps: {},
+    milestones: adminTemplate.milestones.map(function(m,idx){ return { index:idx, position:m.position, name:m.name, icon:m.icon, eligible:false, redeemed:false, redeemedAt:null }; })
+  };
+  renderStampCard('demo-track-lbl','demo-fill','demo-dots','demo-stamps','demo-count','demo-total','demo-reward-cards', demoProgress, true);
+
+  var grid=document.getElementById('demo-sessions');
+  grid.innerHTML='';
+  allSessions.slice(0,SESSION_PAGE_SIZE).forEach(function(s,idx){
+    var claimed = idx < Math.ceil(allSessions.length*0.5);
+    var status=claimed?'col':'upc';
+    var lbl=claimed?'Collected':'Upcoming';
+    var icon=claimed?'ti-check':'ti-clock';
+    var metaParts=[];
+    if(s.time)     metaParts.push('<span class="sess-meta-pill"><i class="ti ti-clock"></i>'+s.time+'</span>');
+    if(s.location) metaParts.push('<span class="sess-meta-pill"><i class="ti ti-map-pin"></i>'+s.location+'</span>');
+    var metaHtml=metaParts.length?'<div class="sess-meta">'+metaParts.join('')+'</div>':'';
+    var card=document.createElement('div');
+    card.className='sess-card';
+    card.innerHTML=
+      '<div class="sess-ic '+status+'"><i class="ti '+s.icon+'" style="font-size:17px;"></i></div>'+
+      '<div style="flex:1;min-width:0;">'+
+        '<div class="stop"><span class="sname">'+htmlAttr(s.name)+'</span><span class="pb">1 pt</span></div>'+
+        '<div class="stype">'+htmlAttr(s.type)+'</div>'+
+        '<div class="sdesc">'+htmlAttr(s.desc)+'</div>'+
+        metaHtml+
+        '<span class="spill '+status+'" style="margin-top:6px;"><i class="ti '+icon+'" style="font-size:10px;"></i> '+lbl+'</span>'+
+      '</div>';
+    grid.appendChild(card);
+  });
+  if(!allSessions.length){
+    grid.innerHTML='<p style="font-size:12px;color:var(--ts);text-align:center;padding:16px 0;">No sessions configured for this track yet.</p>';
+  }
+
+  document.getElementById('demo-overlay').classList.add('open');
+}
+function closeDemoView(){
+  document.getElementById('demo-overlay').classList.remove('open');
+}
+</script>
+
+</body>
+</html>
